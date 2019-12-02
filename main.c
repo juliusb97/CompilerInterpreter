@@ -66,7 +66,9 @@ tMorph* Lex(void){
 		Morph.Val.Symb = *(Morph.Val.pStr);
 	}
 
-	return &Morph;
+	if(Morph.Val.Symb == mcEmpty)
+		return Lex();
+	else return &Morph;
 }
 
 static void finalize(void){
@@ -217,12 +219,14 @@ int checkKeyword(tMorph* m){
 	return NOKEYWORD;
 }
 
+int depth = 0;
+
 void LookupGraph(tBog* pBog){
 	int i;
 
-	for(i = 0; i < 6; i+=2){
+	for(i = 0; i < 13; i+=2){
 		if(pBog >= endStates[i] && pBog <= endStates[i+1]){
-			printf("Graph: %s.\n", graphNames[i/2]);
+			printf("Depth: %d Graph: %s.\n", depth, graphNames[i]);
 			return;
 		}
 	}
@@ -230,8 +234,11 @@ void LookupGraph(tBog* pBog){
 
 int parse(tBog* pGraph)
 {
+	depth++;
 	tBog* pBog=pGraph;
 	int succ=0;
+
+	LookupGraph(pBog);
 
 	if (Morph.MC==mcEmpty)  Lex();
 	while(1)
@@ -243,8 +250,6 @@ int parse(tBog* pGraph)
 			case BgGr:succ=parse(pBog->BgX.G);           break;
 			case BgEn:return 1;   /* Ende erreichet - Erfolg */
 		}
-
-		LookupGraph(pBog);
 
 		if (succ && pBog->fx!=NULL) succ=pBog->fx();
 		if (!succ)/* Alternativbogen probieren */
@@ -258,6 +263,7 @@ int parse(tBog* pGraph)
 			pBog=pGraph+pBog->iNext;
 		}
 	}/* while */
+	depth--;
 }
 
 int main(int argc, char* argv[]){

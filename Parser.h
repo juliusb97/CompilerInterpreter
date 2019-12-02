@@ -80,7 +80,7 @@ static tBog gExpr[] =
 /* 5  */ {BgGr, {(ul)gTerm	}, NULL, 2,		0},/* '+'----------term--------> 2			*/ //Perhaps obsolete?
 /* 6  */ {BgSy,	{(ul)'+'	}, NULL, 4,		7},/* NL-----------'+'---------> term		*/
 /* 7  */ {BgSy,	{(ul)'-'	}, NULL, 4,		8},/* NL-----------'-'---------> term		*/
-/* 8  */ {BgNl, {(ul)0		}, NULL, 0,		0} /* NL-----------------------> Ende		*/
+/* 8  */ {BgEn, {(ul)0		}, NULL, 0,		0} /* NL-----------------------> Ende		*/
 /* 9  */ 
 /* 10 */ 
 };
@@ -146,9 +146,10 @@ static tBog gBlock[] = {
 };
 
 static char* graphNames[] = {
-		"Program",          "Block",            "Statement",
-		"Expression",       "Term",             "Factor",
-		"Condition"
+		"Program",          "Program",          "Block",        "Block",
+		"Statement",        "Statement",        "Expression",   "Expression",
+		"Term",             "Term",             "Factor",       "Factor",
+		"Condition",        "Condition"
 };
 
 static tBog* endStates[] = {
