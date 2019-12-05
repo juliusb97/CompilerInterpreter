@@ -4,6 +4,7 @@
 #include <ctype.h>
 #include "Lexer.h"
 #include "Parser.h"
+#include "NameList.h"
 
 int initLex(char* fname){
 	char vName[128+1];
@@ -266,8 +267,66 @@ int parse(tBog* pGraph)
 	depth--;
 }
 
-int main(int argc, char* argv[]){
+tVar* CreateVar(void){
+    tVar* newVar = malloc(sizeof(tVar));
+    
+    newVar->Kz = KzVar;
+    newVar->Dspl = (tProc)(ProcList->content).SpzzVar;
+    
+    (tProc)(ProcList->content).SpzzVar+=4;
+    
+    return newVar;
+};
 
+tConst* createConst(long Val){
+    tConst* newConst = (tConst*)malloc(sizeof(tConst));
+    
+    newConst->Kz = KzConst;
+    newConst->Val = Val;
+    newConst->Idx = ConstCounter;
+    
+    //Not sure if correct
+    realloc(ConstBlock, sizeof(int) * (ConstCounter+1));
+    ConstBlock[ConstCounter] = Val;
+    
+    ConstCounter++;
+    
+}
+
+tBez* createBez(char* pBez){
+    tBez* newBez = malloc(sizeof(tBez));
+    
+    newBez->IdxProc = procCounter; //TODO: Check if procCounter or procCounter+1
+    newBez->Len = strlen(pBez);
+    newBez->pName = (char*)malloc(newBez->Len + 1);
+    strcpy(newBez->pName, pBez);
+    
+    return newBez;
+}
+
+tProc* createProc(tProc* pParent){
+    if(procCounter == 0){
+        ProcList->content = (void*)malloc(sizeof(tProc));
+        
+        (tProc*)(ProcList->content)->tKz = KzProc;
+        (tProc*)(ProcList->content)->IdxProc = procCounter;
+        (tProc*)(ProcList->content)->pParent = NULL;
+        //TODO: identifier list
+        (tProc*)(ProcList->content)->SpzzVar = 0;
+    } else{
+        ProcList->nxt = (void*)malloc(sizeof(tProc));
+        ProcList->nxt->prv = ProcList;
+        ProcList = ProcList->nxt;
+    }
+    
+    procCounter++;
+    return ProcList;
+}
+
+int ConstCounter = 0;
+int* ConstBlock = (int*)malloc(sizeof(int));
+
+int main(int argc, char* argv[]){
 	tMorph* tmp;
 	int debugCounter = 0, keywordIdx = 0;
 

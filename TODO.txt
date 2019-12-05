@@ -4,3 +4,4 @@
  X Morphemcode ändern, wenn Schlüsselwort erkannt
  X Alternativbögen korrigieren
  - Wie funktionieren Vergleiche einzelner Zeichen im Parser? (in pStr)
+ - Speicher-belegende Dinge aus .h in .c und sinnvoll modularisieren
