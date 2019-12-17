@@ -239,7 +239,8 @@ int parse(tBog* pGraph)
 	tBog* pBog=pGraph;
 	int succ=0;
 
-	LookupGraph(pBog);
+	//DEBUG
+	//LookupGraph(pBog);
 
 	if (Morph.MC==mcEmpty)  Lex();
 	while(1)
@@ -271,9 +272,9 @@ tVar* CreateVar(void){
     tVar* newVar = malloc(sizeof(tVar));
     
     newVar->Kz = KzVar;
-    newVar->Dspl = (tProc)(ProcList->content).SpzzVar;
+    newVar->Dspl = ((tProc*)(ProcList->content))->SpzzVar;
     
-    (tProc)(ProcList->content).SpzzVar+=4;
+    ((tProc*)(ProcList->content))->SpzzVar+=4;
     
     return newVar;
 };
@@ -307,28 +308,29 @@ tBez* createBez(char* pBez){
 tProc* createProc(tProc* pParent){
     if(procCounter == 0){
         ProcList->content = (void*)malloc(sizeof(tProc));
-        
-        (tProc*)(ProcList->content)->tKz = KzProc;
-        (tProc*)(ProcList->content)->IdxProc = procCounter;
-        (tProc*)(ProcList->content)->pParent = NULL;
-        //TODO: identifier list
-        (tProc*)(ProcList->content)->SpzzVar = 0;
     } else{
         ProcList->nxt = (void*)malloc(sizeof(tProc));
-        ProcList->nxt->prv = ProcList;
+        ((tList*)(ProcList->nxt))->prv = ProcList;
         ProcList = ProcList->nxt;
     }
+    
+            
+    ((tProc*)(ProcList->content))->Kz = KzProc;
+    ((tProc*)(ProcList->content))->IdxProc = procCounter;
+    ((tProc*)(ProcList->content))->pParent = NULL;
+    //TODO: identifier list
+    ((tProc*)(ProcList->content))->SpzzVar = 0;
     
     procCounter++;
     return ProcList;
 }
 
-int ConstCounter = 0;
-int* ConstBlock = (int*)malloc(sizeof(int));
+ConstCounter = 0;
 
 int main(int argc, char* argv[]){
 	tMorph* tmp;
 	int debugCounter = 0, keywordIdx = 0;
+	ConstBlock = (int*)malloc(sizeof(int));
 
 	printf("%s\n", (initLex(argv[1]))?"InitLex failed.\n":"");
 

@@ -1,13 +1,3 @@
-//
-// Created by julius on 11/14/19.
-//
-
-#ifndef HELLOWORLD_LEXER_H
-#define HELLOWORLD_LEXER_H
-
-#endif //HELLOWORLD_LEXER_H
-
-
 #define FAIL -1
 #define OK 0
 #define MAXKEYWORDCLASSLENGTH 3
