@@ -3,6 +3,7 @@ typedef enum KZs{
 } Kzs;
 
 typedef int tKz;
+typedef struct TBez tBez;
 
 typedef struct TList{
     void*   content;
@@ -11,8 +12,9 @@ typedef struct TList{
 } tList;
 
 //Name list entry
-typedef struct{
+typedef struct TBez{
     tKz     Kz;
+    tBez*   nxt;
     short   IdxProc;
     void*   pObj;
     int     Len;
@@ -38,7 +40,7 @@ typedef struct tPROC{
     tKz     Kz;
     short   IdxProc;
     struct  tPROC* pParent;
-    tList*  pLBez;
+    tBez*   pLBez;
     int     SpzzVar;
 } tProc;
 
@@ -49,7 +51,10 @@ int     createVar(void);
 tProc*  createProc(tProc*pParent);
 tBez*   searchBez(tProc*pProc,char* pBez);
 tBez*   searchBezGlobal(char* pBez);
-static  tList*   ProcList;
+
+int     newProc();
+
+static  tProc*   procList;
 static  int procCounter = 0;
-extern int ConstCounter;
-static int* ConstBlock;
+extern  int ConstCounter;
+static  int* ConstBlock;

@@ -3,8 +3,8 @@
 #include <string.h>
 #include <ctype.h>
 #include "Lexer.h"
-#include "Parser.h"
 #include "NameList.h"
+#include "Parser.h"
 
 int initLex(char* fname){
 	char vName[128+1];
@@ -223,14 +223,37 @@ int checkKeyword(tMorph* m){
 int depth = 0;
 
 void LookupGraph(tBog* pBog){
-	int i;
+	int i, j;
 
 	for(i = 0; i < 13; i+=2){
 		if(pBog >= endStates[i] && pBog <= endStates[i+1]){
+            printf("==================================================\n");
 			printf("Depth: %d Graph: %s.\n", depth, graphNames[i]);
+            printf("==================================================\n\n");
 			return;
 		}
 	}
+}
+
+void PrintMorph(tMorph* m){
+    int keywordIdx = 0;
+    
+    switch(m->MC){
+		case mcSymb:
+			printf("Morphem %-10s: %s\n", "mcSymb", vBuf);
+			break;
+		case mcNum:
+			printf("Morphem %-10s: %ld\n", "mcNum", m->Val.Num);
+			break;
+		case mcIdent:
+			printf("Morphem %-10s: %s\n", "mcIdent", m->Val.pStr);
+			if((keywordIdx = checkKeyword(m)) != -1)
+				printf("Keyword %-10s\n", keyWords[keywordIdx]);
+			break;
+		case mcEOF:
+        case mcEmpty:
+            break;
+    }
 }
 
 int parse(tBog* pGraph)
@@ -250,9 +273,11 @@ int parse(tBog* pGraph)
 			case BgSy:succ=(Morph.Val.Symb==pBog->BgX.S);break;
 			case BgMo:succ=(Morph.MC==(tMC)pBog->BgX.M); break;
 			case BgGr:succ=parse(pBog->BgX.G);           break;
-			case BgEn:return 1;   /* Ende erreichet - Erfolg */
+			case BgEn:depth--; return 1;  /* Ende erreichet - Erfolg */
 		}
 
+		//PrintMorph(&Morph);
+		
 		if (succ && pBog->fx!=NULL) succ=pBog->fx();
 		if (!succ)/* Alternativbogen probieren */
 			if (pBog->iAlt != 0)
@@ -269,6 +294,7 @@ int parse(tBog* pGraph)
 }
 
 tVar* CreateVar(void){
+    /*
     tVar* newVar = malloc(sizeof(tVar));
     
     newVar->Kz = KzVar;
@@ -277,9 +303,11 @@ tVar* CreateVar(void){
     ((tProc*)(ProcList->content))->SpzzVar+=4;
     
     return newVar;
-};
+    */
+}
 
 tConst* createConst(long Val){
+    /*
     tConst* newConst = (tConst*)malloc(sizeof(tConst));
     
     newConst->Kz = KzConst;
@@ -291,38 +319,64 @@ tConst* createConst(long Val){
     ConstBlock[ConstCounter] = Val;
     
     ConstCounter++;
-    
+    */
 }
 
 tBez* createBez(char* pBez){
+    /*
     tBez* newBez = malloc(sizeof(tBez));
     
+    newBez->nxt = procList->pLBez;
     newBez->IdxProc = procCounter; //TODO: Check if procCounter or procCounter+1
     newBez->Len = strlen(pBez);
     newBez->pName = (char*)malloc(newBez->Len + 1);
     strcpy(newBez->pName, pBez);
     
+    procList->pLBez = newBez;
+    
     return newBez;
+    */
 }
 
 tProc* createProc(tProc* pParent){
     if(procCounter == 0){
-        ProcList->content = (void*)malloc(sizeof(tProc));
+        procList = (void*)malloc(sizeof(tProc));
     } else{
-        ProcList->nxt = (void*)malloc(sizeof(tProc));
-        ((tList*)(ProcList->nxt))->prv = ProcList;
-        ProcList = ProcList->nxt;
+        
+        // Neue Prozedurbeschreibung anlegen
+        // Prozedurbeschreibung in Bezeichner verlinken
+        
+        tBez* oldListStart = procList->pLBez;
+        procList->pLBez = malloc(sizeof(tProc));
     }
     
-            
-    ((tProc*)(ProcList->content))->Kz = KzProc;
-    ((tProc*)(ProcList->content))->IdxProc = procCounter;
-    ((tProc*)(ProcList->content))->pParent = NULL;
-    //TODO: identifier list
-    ((tProc*)(ProcList->content))->SpzzVar = 0;
+    ((tProc*)(procList))->Kz = KzProc;
+    ((tProc*)(procList))->IdxProc = procCounter++;
+    ((tProc*)(procList))->pParent = pParent;
+    ((tProc*)(procList))->pLBez = NULL;
+    ((tProc*)(procList))->SpzzVar = 0;
     
-    procCounter++;
-    return ProcList;
+    return procList;
+}
+
+int newProc(){
+    // Suche nach Bezeichner
+    
+    printf("newProc entry\n");
+    
+    // if not found
+    tBez* newBezeichner = createBez(Morph.Val.pStr);
+    
+    printf("created new Bezeichner\n");
+    
+    tProc* newProcedure = createProc(procList);
+    procList = newProcedure;
+    
+    printf("Created Procedure-Block with no. %d and name %s\n", procCounter, Morph.Val.pStr);
+    
+    
+    //On error: return false
+    return procCounter;
 }
 
 ConstCounter = 0;
@@ -335,6 +389,8 @@ int main(int argc, char* argv[]){
 	printf("%s\n", (initLex(argv[1]))?"InitLex failed.\n":"");
 
 	parse(gProgram);
+    
+    printf("Done.\n");
 
 /*
 	do{

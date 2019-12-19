@@ -50,7 +50,7 @@ static tBog gFact[]=
 
 static tBog gProgram[] =
 {
-/* 0 */ {BgGr, {(ul)gBlock  }, NULL, 1,		0}, /*(0)---Block--->('.')*/
+/* 0 */ {BgGr, {(ul)gBlock  }, &newProc, 1,		0}, /*(0)---Block--->('.')*/
 /* 1 */ {BgMo, {(ul)'.'     }, NULL, 2,		0}, /*('.')--------->Ende*/
 /* 2 */ {BgEn, {(ul)0       }, NULL, 0,		0}
 };
@@ -136,7 +136,7 @@ static tBog gBlock[] = {
 /* 10 */ {BgSy, {(ul)';'	}, NULL,12,		0},
 /* 11 */ {BgNl, {(ul)0		}, NULL,12,		0},
 /* 12 */ {BgSy, {(ul)zPRC	}, NULL,13,	   17},
-/* 13 */ {BgMo, {(ul)mcIdent}, NULL,14,		0},
+/* 13 */ {BgMo, {(ul)mcIdent}, &newProc,14,		0},
 /* 14 */ {BgSy, {(ul)';'	}, NULL,15,		0},
 /* 15 */ {BgGr, {(ul)gBlock	}, NULL,16,		0},
 /* 16 */ {BgSy, {(ul)';'	}, NULL,12,		0},
