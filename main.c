@@ -294,16 +294,14 @@ int parse(tBog* pGraph)
 }
 
 tVar* CreateVar(void){
-    /*
-    tVar* newVar = malloc(sizeof(tVar));
+    tVar* newVar 		= malloc(sizeof(tVar));
     
-    newVar->Kz = KzVar;
-    newVar->Dspl = ((tProc*)(ProcList->content))->SpzzVar;
+    newVar->Kz 			= KzVar;
+    newVar->Dspl 		= procList->SpzzVar;
     
-    ((tProc*)(ProcList->content))->SpzzVar+=4;
+	procList->SpzzVar	+=4;
     
     return newVar;
-    */
 }
 
 tConst* createConst(long Val){
@@ -362,6 +360,22 @@ tProc* createProc(tProc* pParent){
     return newProc;
 }
 
+int NewVar(){
+	printf("New Variable\n");
+	
+	//TODO: search Variable
+	
+	tBez* newBezeichner = createBez(Morph.Val.pStr);
+	newBezeichner->Kz = KzVar;
+	
+	printf("Created Bezeichner\n");
+	
+	procList->pLBez->pObj = CreateVar();
+	
+	printf("Created new Variable %s with relative address %d\n\n\n", procList->pLBez->pName, ((tVar*)(procList->pLBez->pObj))->Dspl);
+	
+	return 1;
+}
 
 int NewConstBez(){
 	printf("New Constant\n");

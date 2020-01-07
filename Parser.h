@@ -130,7 +130,7 @@ static tBog gBlock[] = {
 /* 5  */ {BgSy, {(ul)';'	}, NULL, 7,		0},
 /* 6  */ {BgNl, {(ul)0		}, NULL, 7,		0},
 /* 7  */ {BgSy, {(ul)zVAR	}, NULL, 8,	   11},
-/* 8  */ {BgMo, {(ul)mcIdent}, NULL, 9,	    0},
+/* 8  */ {BgMo, {(ul)mcIdent}, &NewVar, 9,	    0},
 /* 9  */ {BgSy, {(ul)','	}, NULL, 8,	   10},
 /* 10 */ {BgSy, {(ul)';'	}, NULL,12,		0},
 /* 11 */ {BgNl, {(ul)0		}, NULL,12,		0},
