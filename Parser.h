@@ -1,4 +1,3 @@
-
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -50,7 +49,7 @@ static tBog gFact[]=
 
 static tBog gProgram[] =
 {
-/* 0 */ {BgGr, {(ul)gBlock  }, &newProc, 1,		0}, /*(0)---Block--->('.')*/
+/* 0 */ {BgGr, {(ul)gBlock  }, NULL, 1,		0}, /*(0)---Block--->('.')*/
 /* 1 */ {BgMo, {(ul)'.'     }, NULL, 2,		0}, /*('.')--------->Ende*/
 /* 2 */ {BgEn, {(ul)0       }, NULL, 0,		0}
 };

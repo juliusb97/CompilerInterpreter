@@ -323,19 +323,19 @@ tConst* createConst(long Val){
 }
 
 tBez* createBez(char* pBez){
-    /*
+    
     tBez* newBez = malloc(sizeof(tBez));
     
-    newBez->nxt = procList->pLBez;
+	newBez->nxt = procList->pLBez;
     newBez->IdxProc = procCounter; //TODO: Check if procCounter or procCounter+1
     newBez->Len = strlen(pBez);
+    
     newBez->pName = (char*)malloc(newBez->Len + 1);
     strcpy(newBez->pName, pBez);
-    
-    procList->pLBez = newBez;
+
+    //procList->pLBez = newBez;
     
     return newBez;
-    */
 }
 
 tProc* createProc(tProc* pParent){
@@ -372,22 +372,38 @@ int newProc(){
     tProc* newProcedure = createProc(procList);
     procList = newProcedure;
     
-    printf("Created Procedure-Block with no. %d and name %s\n", procCounter, Morph.Val.pStr);
+    printf("Created Procedure-Block with no. %d and name %s\n", procCounter, newBezeichner->pName);
     
     
     //On error: return false
     return procCounter;
 }
 
-ConstCounter = 0;
+void newProg(){
+
+	printf("new Program\n");
+	
+	tProc* newProcedure = createProc(procList);
+	procList = newProcedure;
+	
+	char* name = "Program";
+	tBez* newBezeichner = createBez(name);
+	
+	printf("Created new Bezeichner");
+	
+	printf("Created Procedure-Block with no. %d and name %s\n", procCounter, newBezeichner->pName);
+}
+
 
 int main(int argc, char* argv[]){
 	tMorph* tmp;
 	int debugCounter = 0, keywordIdx = 0;
 	ConstBlock = (int*)malloc(sizeof(int));
+	ConstCounter = 0;
 
 	printf("%s\n", (initLex(argv[1]))?"InitLex failed.\n":"");
 
+	newProg();
 	parse(gProgram);
     
     printf("Done.\n");

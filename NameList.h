@@ -53,8 +53,9 @@ tBez*   searchBez(tProc*pProc,char* pBez);
 tBez*   searchBezGlobal(char* pBez);
 
 int     newProc();
+void	newProg();
 
 static  tProc*   procList;
 static  int procCounter = 0;
-extern  int ConstCounter;
+static  int ConstCounter = 0;
 static  int* ConstBlock;
