@@ -326,19 +326,20 @@ tBez* createBez(char* pBez){
     
     tBez* newBez = malloc(sizeof(tBez));
     
-	newBez->nxt = procList->pLBez;
+	newBez->nxt 	= procList->pLBez;
     newBez->IdxProc = procCounter; //TODO: Check if procCounter or procCounter+1
-    newBez->Len = strlen(pBez);
-    
-    newBez->pName = (char*)malloc(newBez->Len + 1);
+    newBez->Len 	= strlen(pBez);
+    newBez->pName 	= (char*)malloc(newBez->Len + 1);
     strcpy(newBez->pName, pBez);
-
-    //procList->pLBez = newBez;
+    newBez->pObj	= NULL;
+    
+    procList->pLBez = newBez;
     
     return newBez;
 }
 
 tProc* createProc(tProc* pParent){
+	/*
     if(procCounter == 0){
         procList = (void*)malloc(sizeof(tProc));
     } else{
@@ -349,14 +350,17 @@ tProc* createProc(tProc* pParent){
         tBez* oldListStart = procList->pLBez;
         procList->pLBez = malloc(sizeof(tProc));
     }
+    */
     
-    ((tProc*)(procList))->Kz = KzProc;
-    ((tProc*)(procList))->IdxProc = procCounter++;
-    ((tProc*)(procList))->pParent = pParent;
-    ((tProc*)(procList))->pLBez = NULL;
-    ((tProc*)(procList))->SpzzVar = 0;
+    tProc* newProc = (tProc*)malloc(sizeof(tProc));
     
-    return procList;
+    ((tProc*)(newProc))->Kz 		= KzProc;
+    ((tProc*)(newProc))->IdxProc 	= procCounter++;
+    ((tProc*)(newProc))->pParent 	= pParent;
+    ((tProc*)(newProc))->pLBez 		= NULL;
+    ((tProc*)(newProc))->SpzzVar 	= 0;
+    
+    return newProc;
 }
 
 int newProc(){
@@ -366,11 +370,14 @@ int newProc(){
     
     // if not found
     tBez* newBezeichner = createBez(Morph.Val.pStr);
+    newBezeichner->Kz = KzProc;
     
     printf("created new Bezeichner\n");
     
     tProc* newProcedure = createProc(procList);
-    procList = newProcedure;
+
+	newBezeichner->pObj = newProcedure;
+	procList = newProcedure;
     
     printf("Created Procedure-Block with no. %d and name %s\n", procCounter, newBezeichner->pName);
     
@@ -383,7 +390,7 @@ void newProg(){
 
 	printf("new Program\n");
 	
-	tProc* newProcedure = createProc(procList);
+	tProc* newProcedure = createProc(NULL);
 	procList = newProcedure;
 	
 	char* name = "Program";
@@ -396,6 +403,11 @@ void newProg(){
 
 
 int main(int argc, char* argv[]){
+
+	if(argc != 2){
+		printf("No source file passed");
+	}
+
 	tMorph* tmp;
 	int debugCounter = 0, keywordIdx = 0;
 	ConstBlock = (int*)malloc(sizeof(int));
