@@ -368,7 +368,9 @@ int Search(char* name, tKz type){
 }
 
 int NewVar(){
+	#ifdef DEBUG
 	printf("New Variable\n");
+	#endif
 	
 	if(Search(Morph.Val.pStr, KzVar) == FAIL){
 		printf("Variable identifier '%s' already exists (Error in line %d)\n", Morph.Val.pStr, Morph.PosLine + 1);
@@ -378,17 +380,23 @@ int NewVar(){
 	tBez* newBezeichner = createBez(Morph.Val.pStr);
 	newBezeichner->Kz = KzVar;
 	
+	#ifdef DEBUG
 	printf("Created Bezeichner\n");
+	#endif
 	
 	procList->pLBez->pObj = CreateVar();
 	
+	#ifdef DEBUG
 	printf("Created new Variable %s with relative address %d\n\n\n", procList->pLBez->pName, ((tVar*)(procList->pLBez->pObj))->Dspl);
+	#endif
 	
 	return 1;
 }
 
 int NewConstBez(){
+	#ifdef DEBUG
 	printf("New Constant\n");
+	#endif
 	
 	if(Search(Morph.Val.pStr, KzConst) == FAIL){
 		printf("Constant identifier '%s' already exists (Error in line %d)\n", Morph.Val.pStr, Morph.PosLine + 1);
@@ -398,21 +406,27 @@ int NewConstBez(){
 	tBez* newBezeichner = createBez(Morph.Val.pStr);
 	newBezeichner->Kz = KzConst;
 	
+	#ifdef DEBUG
 	printf("Created Bezeichner\n");
+	#endif
+	
 	return 1;
 }
 
 int NewConst(){
 	procList->pLBez->pObj = createConst(Morph.Val.Num);
 	
+	#ifdef DEBUG
 	printf("Created new Constant %s with value: %ld\n\n\n", procList->pLBez->pName, ((tConst*)(procList->pLBez->pObj))->Val);
+	#endif
 	
 	return 1;
 }
 
 int newProc(){
-    
+    #ifdef DEBUG
     printf("New Procedure\n");
+    #endif
     
     //procList = procList->pParent;
 	if(Search(Morph.Val.pStr, KzProc) == FAIL){
@@ -423,15 +437,18 @@ int newProc(){
     tBez* newBezeichner = createBez(Morph.Val.pStr);
     newBezeichner->Kz = KzProc;
     
+    #ifdef DEBUG
     printf("Created Bezeichner\n");
+    #endif
     
     tProc* newProcedure = createProc(root);
 
 	newBezeichner->pObj = newProcedure;
 	procList = newProcedure;
     
+    #ifdef DEBUG
     printf("Created Procedure-Block with no. %d and name %s\n\n\n", procList->IdxProc, newBezeichner->pName);
-    
+    #endif
     
     //On error: return false
     return 1;
@@ -439,7 +456,9 @@ int newProc(){
 
 void newProg(){
 
+	#ifdef DEBUG
 	printf("New Program\n");
+	#endif
 	
 	tProc* newProcedure = root = createProc(NULL);
 	procList = newProcedure;
@@ -449,7 +468,9 @@ void newProg(){
 	
 	//printf("Created Bezeichner\n");
 	
+	#ifdef DEBUG
 	printf("Created Procedure-Block with no. %d\n\n\n", newProcedure->IdxProc);
+	#endif
 }
 
 /*
@@ -473,7 +494,8 @@ int FreeDescriptions(){
 	
 	tProc* oldProc = procList;
 	procList = procList->pParent;
-	free(oldProc);
+	
+	//free(oldProc);		//Muss noch erhalten bleiben?
 	
 	return 1;
 }
