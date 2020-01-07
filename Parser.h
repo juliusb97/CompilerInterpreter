@@ -137,7 +137,7 @@ static tBog gBlock[] = {
 /* 12 */ {BgSy, {(ul)zPRC	}, NULL,13,	   17},
 /* 13 */ {BgMo, {(ul)mcIdent}, &newProc,14,		0},
 /* 14 */ {BgSy, {(ul)';'	}, NULL,15,		0},
-/* 15 */ {BgGr, {(ul)gBlock	}, &ReturnToParent,16,		0},
+/* 15 */ {BgGr, {(ul)gBlock	}, &FreeDescriptions,16,		0},
 /* 16 */ {BgSy, {(ul)';'	}, NULL,12,		0},
 /* 17 */ {BgNl, {(ul)0		}, NULL,18,		0},
 /* 18 */ {BgGr, {(ul)gStmnt	}, NULL,19,		0},

@@ -452,9 +452,28 @@ void newProg(){
 	printf("Created Procedure-Block with no. %d\n\n\n", newProcedure->IdxProc);
 }
 
-int ReturnToParent(){
+/*
+void ReturnToParent(){
 	if(procList->pParent != NULL)
 		procList = procList->pParent;
+}
+*/
+
+int FreeDescriptions(){
+	tBez* start = procList->pLBez;
+	tBez* tmp = start;
+	tBez* tmpOld = start;
+	
+	while(tmp != NULL){
+		tmp = tmp->nxt;
+		free(tmpOld->pObj);
+		free(tmpOld);
+		tmpOld = tmp;
+	}
+	
+	tProc* oldProc = procList;
+	procList = procList->pParent;
+	free(oldProc);
 	
 	return 1;
 }

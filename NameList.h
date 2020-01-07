@@ -57,7 +57,8 @@ int		NewConstBez();
 int		NewConst();
 int     newProc();
 void	newProg();
-int		ReturnToParent();
+//int		ReturnToParent();
+int		FreeDescriptions();
 
 static	tProc*	 root;
 static  tProc*   procList;
