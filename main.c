@@ -307,19 +307,18 @@ tVar* CreateVar(void){
 }
 
 tConst* createConst(long Val){
-    /*
     tConst* newConst = (tConst*)malloc(sizeof(tConst));
     
     newConst->Kz = KzConst;
     newConst->Val = Val;
-    newConst->Idx = ConstCounter;
+    newConst->Idx = ConstCounter++;
     
     //Not sure if correct
-    realloc(ConstBlock, sizeof(int) * (ConstCounter+1));
-    ConstBlock[ConstCounter] = Val;
-    
-    ConstCounter++;
-    */
+    void* ret = realloc(ConstBlock, sizeof(int) * ConstCounter);
+    if(ret == NULL) printf("Realloc in const-Creation failed\n");
+    ConstBlock[ConstCounter-1] = Val;
+	
+	return newConst;
 }
 
 tBez* createBez(char* pBez){
@@ -363,23 +362,44 @@ tProc* createProc(tProc* pParent){
     return newProc;
 }
 
+
+int NewConstBez(){
+	printf("New Constant\n");
+	
+	//TODO: search Const
+	
+	tBez* newBezeichner = createBez(Morph.Val.pStr);
+	newBezeichner->Kz = KzConst;
+	
+	printf("Created Bezeichner\n");
+	return 1;
+}
+
+int NewConst(){
+	procList->pLBez->pObj = createConst(Morph.Val.Num);
+	
+	printf("Created new Constant %s with value: %ld\n\n\n", procList->pLBez->pName, ((tConst*)(procList->pLBez->pObj))->Val);
+	
+	return 1;
+}
+
 int newProc(){
     // Suche nach Bezeichner
     
-    printf("newProc entry\n");
+    printf("New Procedure\n");
     
     // if not found
     tBez* newBezeichner = createBez(Morph.Val.pStr);
     newBezeichner->Kz = KzProc;
     
-    printf("created new Bezeichner\n");
+    printf("Created Bezeichner\n");
     
     tProc* newProcedure = createProc(procList);
 
 	newBezeichner->pObj = newProcedure;
 	procList = newProcedure;
     
-    printf("Created Procedure-Block with no. %d and name %s\n", procCounter, newBezeichner->pName);
+    printf("Created Procedure-Block with no. %d and name %s\n\n\n", procCounter, newBezeichner->pName);
     
     
     //On error: return false
@@ -388,7 +408,7 @@ int newProc(){
 
 void newProg(){
 
-	printf("new Program\n");
+	printf("New Program\n");
 	
 	tProc* newProcedure = createProc(NULL);
 	procList = newProcedure;
@@ -396,9 +416,9 @@ void newProg(){
 	char* name = "Program";
 	tBez* newBezeichner = createBez(name);
 	
-	printf("Created new Bezeichner");
+	printf("Created Bezeichner\n");
 	
-	printf("Created Procedure-Block with no. %d and name %s\n", procCounter, newBezeichner->pName);
+	printf("Created Procedure-Block with no. %d and name %s\n\n\n", procCounter, newBezeichner->pName);
 }
 
 

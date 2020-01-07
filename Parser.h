@@ -123,9 +123,9 @@ static tBog gStmnt[] = {
 
 static tBog gBlock[] = {
 /* 0  */ {BgSy, {(ul)zCST	}, NULL, 1,		6},
-/* 1  */ {BgMo, {(ul)mcIdent}, NULL, 2,		0},
+/* 1  */ {BgMo, {(ul)mcIdent}, &NewConstBez, 2,		0},
 /* 2  */ {BgSy, {(ul)'='	}, NULL, 3,		0},
-/* 3  */ {BgMo, {(ul)mcNum	}, NULL, 4,		0},
+/* 3  */ {BgMo, {(ul)mcNum	}, &NewConst, 4,		0},
 /* 4  */ {BgSy, {(ul)','	}, NULL, 1,		5},
 /* 5  */ {BgSy, {(ul)';'	}, NULL, 7,		0},
 /* 6  */ {BgNl, {(ul)0		}, NULL, 7,		0},

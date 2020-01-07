@@ -52,6 +52,8 @@ tProc*  createProc(tProc*pParent);
 tBez*   searchBez(tProc*pProc,char* pBez);
 tBez*   searchBezGlobal(char* pBez);
 
+int		NewConstBez();
+int		NewConst();
 int     newProc();
 void	newProg();
 
