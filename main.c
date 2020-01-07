@@ -315,6 +315,8 @@ tConst* createConst(long Val){
     void* ret = realloc(ConstBlock, sizeof(int) * ConstCounter);
     if(ret == NULL) printf("Realloc in const-Creation failed\n");
     ConstBlock[ConstCounter-1] = Val;
+    
+    //Frage: siehe Algorithmus in Folie
 	
 	return newConst;
 }
@@ -336,19 +338,6 @@ tBez* createBez(char* pBez){
 }
 
 tProc* createProc(tProc* pParent){
-	/*
-    if(procCounter == 0){
-        procList = (void*)malloc(sizeof(tProc));
-    } else{
-        
-        // Neue Prozedurbeschreibung anlegen
-        // Prozedurbeschreibung in Bezeichner verlinken
-        
-        tBez* oldListStart = procList->pLBez;
-        procList->pLBez = malloc(sizeof(tProc));
-    }
-    */
-    
     tProc* newProc = (tProc*)malloc(sizeof(tProc));
     
     ((tProc*)(newProc))->Kz 		= KzProc;
@@ -360,10 +349,31 @@ tProc* createProc(tProc* pParent){
     return newProc;
 }
 
+int Search(char* name, tKz type){
+	tBez* start = procList->pLBez;
+	tBez* tmp 	= start;
+	
+	while(tmp != NULL){
+		if(tmp->Kz != type){
+			tmp = tmp->nxt;
+			continue;
+		} else {
+			if(strcmp(tmp->pName, name) == 0) return FAIL;
+		}
+		
+		tmp = tmp->nxt;
+	}
+	
+	return OK;
+}
+
 int NewVar(){
 	printf("New Variable\n");
 	
-	//TODO: search Variable
+	if(Search(Morph.Val.pStr, KzVar) == FAIL){
+		printf("Variable identifier '%s' already exists (Error in line %d)\n", Morph.Val.pStr, Morph.PosLine + 1);
+		exit(FAIL);
+	}
 	
 	tBez* newBezeichner = createBez(Morph.Val.pStr);
 	newBezeichner->Kz = KzVar;
@@ -380,7 +390,10 @@ int NewVar(){
 int NewConstBez(){
 	printf("New Constant\n");
 	
-	//TODO: search Const
+	if(Search(Morph.Val.pStr, KzConst) == FAIL){
+		printf("Constant identifier '%s' already exists (Error in line %d)\n", Morph.Val.pStr, Morph.PosLine + 1);
+		exit(FAIL);
+	}
 	
 	tBez* newBezeichner = createBez(Morph.Val.pStr);
 	newBezeichner->Kz = KzConst;
@@ -398,43 +411,53 @@ int NewConst(){
 }
 
 int newProc(){
-    // Suche nach Bezeichner
     
     printf("New Procedure\n");
     
-    // if not found
+    //procList = procList->pParent;
+	if(Search(Morph.Val.pStr, KzProc) == FAIL){
+		printf("Procedure identifier '%s' already exists (Error in line %d)\n", Morph.Val.pStr, Morph.PosLine + 1);
+		exit(FAIL);
+	}
+    
     tBez* newBezeichner = createBez(Morph.Val.pStr);
     newBezeichner->Kz = KzProc;
     
     printf("Created Bezeichner\n");
     
-    tProc* newProcedure = createProc(procList);
+    tProc* newProcedure = createProc(root);
 
 	newBezeichner->pObj = newProcedure;
 	procList = newProcedure;
     
-    printf("Created Procedure-Block with no. %d and name %s\n\n\n", procCounter, newBezeichner->pName);
+    printf("Created Procedure-Block with no. %d and name %s\n\n\n", procList->IdxProc, newBezeichner->pName);
     
     
     //On error: return false
-    return procCounter;
+    return 1;
 }
 
 void newProg(){
 
 	printf("New Program\n");
 	
-	tProc* newProcedure = createProc(NULL);
+	tProc* newProcedure = root = createProc(NULL);
 	procList = newProcedure;
 	
-	char* name = "Program";
-	tBez* newBezeichner = createBez(name);
+	//char* name = "Program";
+	//tBez* newBezeichner = createBez(name);
 	
-	printf("Created Bezeichner\n");
+	//printf("Created Bezeichner\n");
 	
-	printf("Created Procedure-Block with no. %d and name %s\n\n\n", procCounter, newBezeichner->pName);
+	printf("Created Procedure-Block with no. %d\n\n\n", newProcedure->IdxProc);
 }
 
+int ReturnToParent(){
+	if(procList->pParent != NULL)
+		procList = procList->pParent;
+	
+	return 1;
+}
 
 int main(int argc, char* argv[]){
 

@@ -57,7 +57,9 @@ int		NewConstBez();
 int		NewConst();
 int     newProc();
 void	newProg();
+int		ReturnToParent();
 
+static	tProc*	 root;
 static  tProc*   procList;
 static  int procCounter = 0;
 static  int ConstCounter = 0;
