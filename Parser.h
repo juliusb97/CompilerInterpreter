@@ -50,7 +50,7 @@ static tBog gFact[]=
 static tBog gProgram[] =
 {
 /* 0 */ {BgGr, {(ul)gBlock  }, NULL, 1,		0}, /*(0)---Block--->('.')*/
-/* 1 */ {BgMo, {(ul)'.'     }, NULL, 2,		0}, /*('.')--------->Ende*/
+/* 1 */ {BgSy, {(ul)'.'     }, &pr1, 2,		0}, /*('.')--------->Ende*/
 /* 2 */ {BgEn, {(ul)0       }, NULL, 0,		0}
 };
 
@@ -73,10 +73,10 @@ static tBog gExpr[] =
 {
 /* 0  */ {BgSy, {(ul)'-'	}, NULL, 1,		3},/* (0)----------'-'---------> expression	*/
 /* 1  */ {BgGr,	{(ul)gTerm	}, NULL, 2,		0},/* '-'----------term--------> 2			*/
-/* 2  */ {BgNl, {(ul)0		}, NULL, 6,		0},/* (0)---------'odd'--------> expression	*/
+/* 2  */ {BgNl, {(ul)0		}, &ex1, 6,		0},/* (0)---------'odd'--------> expression	*/
 /* 3  */ {BgGr,	{(ul)gTerm	}, NULL, 2,		0},/* (0)----------term--------> 2			*/
-/* 4  */ {BgGr, {(ul)gTerm	}, NULL, 2,		0},/* '+'----------term--------> 2			*/
-/* 5  */ {BgGr, {(ul)gTerm	}, NULL, 2,		0},/* '+'----------term--------> 2			*/ //Perhaps obsolete?
+/* 4  */ {BgGr, {(ul)gTerm	}, &ex2, 2,		0},/* '+'----------term--------> 2			*/
+/* 5  */ {BgGr, {(ul)gTerm	}, &ex3, 2,		0},/* '+'----------term--------> 2			*/ //Perhaps obsolete?
 /* 6  */ {BgSy,	{(ul)'+'	}, NULL, 4,		7},/* NL-----------'+'---------> term		*/
 /* 7  */ {BgSy,	{(ul)'-'	}, NULL, 4,		8},/* NL-----------'-'---------> term		*/
 /* 8  */ {BgEn, {(ul)0		}, NULL, 0,		0} /* NL-----------------------> Ende		*/
@@ -116,31 +116,31 @@ static tBog gStmnt[] = {
 /* 17 */ {BgSy, {(ul)'?'	}, NULL,18,	   19},
 /* 18 */ {BgMo, {(ul)mcIdent}, NULL,22,		0},
 /* 19 */ {BgSy, {(ul)'!'	}, NULL,20,	   21},
-/* 20 */ {BgGr, {(ul)gExpr	}, NULL,22,		0},
+/* 20 */ {BgGr, {(ul)gExpr	}, &st10,22,	0},
 /* 21 */ {BgNl, {(ul)0		}, NULL,22,		0},
 /* 22 */ {BgEn, {(ul)0		}, NULL, 0,		0}
 };
 
 static tBog gBlock[] = {
 /* 0  */ {BgSy, {(ul)zCST	}, NULL, 1,		6},
-/* 1  */ {BgMo, {(ul)mcIdent}, &NewConstBez, 2,		0},
+/* 1  */ {BgMo, {(ul)mcIdent}, &bl1, 2,		0},
 /* 2  */ {BgSy, {(ul)'='	}, NULL, 3,		0},
-/* 3  */ {BgMo, {(ul)mcNum	}, &NewConst, 4,		0},
+/* 3  */ {BgMo, {(ul)mcNum	}, &bl2, 4,		0},
 /* 4  */ {BgSy, {(ul)','	}, NULL, 1,		5},
 /* 5  */ {BgSy, {(ul)';'	}, NULL, 7,		0},
 /* 6  */ {BgNl, {(ul)0		}, NULL, 7,		0},
 /* 7  */ {BgSy, {(ul)zVAR	}, NULL, 8,	   11},
-/* 8  */ {BgMo, {(ul)mcIdent}, &NewVar, 9,	    0},
+/* 8  */ {BgMo, {(ul)mcIdent}, &bl3, 9,	    0},
 /* 9  */ {BgSy, {(ul)','	}, NULL, 8,	   10},
 /* 10 */ {BgSy, {(ul)';'	}, NULL,12,		0},
 /* 11 */ {BgNl, {(ul)0		}, NULL,12,		0},
 /* 12 */ {BgSy, {(ul)zPRC	}, NULL,13,	   17},
-/* 13 */ {BgMo, {(ul)mcIdent}, &newProc,14,		0},
+/* 13 */ {BgMo, {(ul)mcIdent}, &bl4,14,		0},
 /* 14 */ {BgSy, {(ul)';'	}, NULL,15,		0},
-/* 15 */ {BgGr, {(ul)gBlock	}, &FreeDescriptions,16,		0},
+/* 15 */ {BgGr, {(ul)gBlock	}, NULL,16,		0},
 /* 16 */ {BgSy, {(ul)';'	}, NULL,12,		0},
-/* 17 */ {BgNl, {(ul)0		}, NULL,18,		0},
-/* 18 */ {BgGr, {(ul)gStmnt	}, NULL,19,		0},
+/* 17 */ {BgNl, {(ul)0		}, &bl6,18,		0},
+/* 18 */ {BgGr, {(ul)gStmnt	}, &bl5,19,		0},
 /* 19 */ {BgEn, {(ul)0		}, NULL, 0,		0}
 };
 

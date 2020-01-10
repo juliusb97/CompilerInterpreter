@@ -8,6 +8,7 @@
 #include "CodeGen.h"
 #include "Parser.h"
 
+#define NOTFOUND 0
 #define VCODE_DEFAULT_LEN 1024
 
 int initLex(char* fname){
@@ -172,15 +173,15 @@ void PrintMorph(tMorph* m){
     
     switch(m->MC){
 		case mcSymb:
-			printf("Morphem %-10s: %s\n", "mcSymb", vBuf);
+			printf("Morphem %s: %s\n", "mcSymb", vBuf);
 			break;
 		case mcNum:
-			printf("Morphem %-10s: %ld\n", "mcNum", m->Val.Num);
+			printf("Morphem %s: %ld\n", "mcNum", m->Val.Num);
 			break;
 		case mcIdent:
-			printf("Morphem %-10s: %s\n", "mcIdent", m->Val.pStr);
+			printf("Morphem %s: %s\n", "mcIdent", m->Val.pStr);
 			if((keywordIdx = checkKeyword(m)) != -1)
-				printf("Keyword %-10s\n", keyWords[keywordIdx]);
+				printf("Keyword %s\n", keyWords[keywordIdx]);
 			break;
 		case mcEOF:
         case mcEmpty:
@@ -209,7 +210,6 @@ int parse(tBog* pGraph)
 			case BgEn:depth--; return 1;  /* Ende erreichet - Erfolg */
 		}
 
-		//PrintMorph(&Morph);
 		
 		if (succ && pBog->fx!=NULL) succ=pBog->fx();
 		if (!succ)/* Alternativbogen probieren */
@@ -218,6 +218,10 @@ int parse(tBog* pGraph)
 			else return FAIL;
 		else /* Morphem formal akzeptiert (eaten) */
 		{
+			#ifdef DEBUG_PARSE
+			LookupGraph(pBog);
+			PrintMorph(&Morph);
+			#endif
 			if (pBog->BgD & BgSy || pBog->BgD & BgMo) Lex();
 			pBog=pGraph+pBog->iNext;
 		}
@@ -282,6 +286,13 @@ tProc* createProc(tProc* pParent){
 }
 
 int Search(char* name, tKz type){
+
+	/*
+	 * TODO:
+	 * Momentan könnte es möglich sein, dass eine Variable und
+	 * eine Konstante den gleichen Namen haben können?
+	 */
+
 	tBez* start = procList->pLBez;
 	tBez* tmp 	= start;
 	
@@ -290,13 +301,13 @@ int Search(char* name, tKz type){
 			tmp = tmp->nxt;
 			continue;
 		} else {
-			if(strcmp(tmp->pName, name) == 0) return FAIL;
+			if(strcmp(tmp->pName, name) == 0) return tmp;
 		}
 		
 		tmp = tmp->nxt;
 	}
 	
-	return OK;
+	return NOTFOUND;
 }
 
 int NewVar(){
@@ -304,7 +315,7 @@ int NewVar(){
 	printf("New Variable\n");
 	#endif
 	
-	if(Search(Morph.Val.pStr, KzVar) == FAIL){
+	if(Search(Morph.Val.pStr, KzVar) != NOTFOUND){
 		printf("Variable identifier '%s' already exists (Error in line %d)\n", Morph.Val.pStr, Morph.PosLine + 1);
 		exit(FAIL);
 	}
@@ -330,7 +341,7 @@ int NewConstBez(){
 	printf("New Constant\n");
 	#endif
 	
-	if(Search(Morph.Val.pStr, KzConst) == FAIL){
+	if(Search(Morph.Val.pStr, KzConst) != NOTFOUND){
 		printf("Constant identifier '%s' already exists (Error in line %d)\n", Morph.Val.pStr, Morph.PosLine + 1);
 		exit(FAIL);
 	}
@@ -361,7 +372,7 @@ int newProc(){
     #endif
     
     //procList = procList->pParent;
-	if(Search(Morph.Val.pStr, KzProc) == FAIL){
+	if(Search(Morph.Val.pStr, KzProc) != NOTFOUND){
 		printf("Procedure identifier '%s' already exists (Error in line %d)\n", Morph.Val.pStr, Morph.PosLine + 1);
 		exit(FAIL);
 	}
@@ -432,47 +443,131 @@ void wr2ToCode(short x)
 }
 void wr2ToCodeAtP(short x,char*pD)
 {
-  * pD   =(unsigned char)(x & 0xff);
+  *pD    =(unsigned char)(x & 0xff);
   *(pD+1)=(unsigned char)(x >> 8);
 }
 
-void pr1(){
+int pr1(){
+	fseek(pOFile, 0, SEEK_END);
 	fwrite(ConstBlock, sizeof(int), ConstCounter, pOFile);
+	
+	#ifdef DEBUG_CODEGEN
+	printf("Wrote constants block\n");
+	#endif
+	
+	return 1;
 }
 
-void bl1(){
+int bl1(){
 	NewConstBez();
+	
+	#ifdef DEBUG_CODEGEN
+	printf("Created new constant Bezeichner\n");
+	#endif
+	
+	return 1;
 }
 
-void bl2(){
+int bl2(){
 	NewConst();
+	
+	#ifdef DEBUG_CODEGEN
+	printf("Created new constant description\n");
+	#endif
+	
+	return 1;
 }
 
-void bl3(){
+int bl3(){
 	NewVar();
+	
+	#ifdef DEBUG_CODEGEN
+	printf("Created new variable description\n");
+	#endif
+	
+	return 1;
 }
 
-void bl4(){
+int bl4(){
 	newProc();
+	
+	#ifdef DEBUG_CODEGEN
+	printf("Created new procedure description\n");
+	#endif
+	
+	return 1;
 }
 
-void bl5(){
+int bl5(){
 	code(retProc);
 
 	//TODO: Codelaenge bei entryProc nachtragen
 	CodeOut(); //wonky
 	FreeDescriptions(); //wonky
+	
+	#ifdef DEBUG_CODEGEN
+	printf("Wrote procedure\n");
+	#endif
+	
+	return 1;
 }
 
-void bl6(){
+int bl6(){
 	vCode = (char*)malloc(VCODE_DEFAULT_LEN);
 	
 	if(vCode == NULL){
-		printf("Code buffer memory could not be allocated.");
+		printf("Code buffer memory could not be allocated.\n");
 		exit(ENoMem);
 	}
 	
-	code(0, procList->IdxProc, procList->SpzzVar);
+	pCode = vCode;
+	code(entryProc, 0, procList->IdxProc, procList->SpzzVar);
+	
+	#ifdef DEBUG_CODEGEN
+	printf("Started on procedure\n");
+	#endif
+	
+	return 1;
+}
+
+int st10(){
+	code(putVal);
+	return 1;
+}
+
+int ex1(){
+	code(vzMinus);
+	return 1;
+}
+
+int ex2(){
+	code(opAdd);
+	return 1;
+}
+
+int ex3(){
+	code(opSub);
+	return 1;
+}
+
+int te1(){
+	code(opMul);
+	return 1;
+}
+
+int te2(){
+	code(opDiv);
+	return 1;
+}
+
+int fa1(){
+	//TODO
+	
+	return 1;
+}
+
+int fa2(){
+	Search(
 }
 
 int code(tCode Code,...)
@@ -488,7 +583,7 @@ int code(tCode Code,...)
     vCode=xCode;
   }
   
-  *pCode++=(char)Code;
+  *pCode++=(char)Code; //TODO: Mistake?
   va_start(ap,Code);
   
   switch (Code)
@@ -572,9 +667,11 @@ int main(int argc, char* argv[]){
 	printf("%s\n", (initLex(argv[1]))?"InitLex failed.\n":"");
 	
 	openOFile(argv[1]);	
+	printf("Opened outputfile\n");
 
 	newProg();
 	parse(gProgram);
+    printf("Compiled successfully\n");
     
     closeOFile();
     printf("Done.\n");

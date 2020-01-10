@@ -1,4 +1,4 @@
-#define MAX_LEN_OF_CODE 4096
+#define MAX_LEN_OF_CODE 81
 #define ENoMem -2
 
 static FILE* pOFile;
@@ -8,75 +8,77 @@ static char* vCode;
 static int LenCode;
 static tProc* pCurrPr;
 
-void pr1();
+int pr1();
 
-void bl1();
-void bl2();
-void bl3();
-void bl4();
-void bl5();
-void bl6();
+int bl1();
+int bl2();
+int bl3();
+int bl4();
+int bl5();
+int bl6();
 
-void st1();
-void st2();
-void st3();
-void st4();
-void st5();
-void st6();
-void st7();
-void st8();
-void st9();
-void st10();
+int st1();
+int st2();
+int st3();
+int st4();
+int st5();
+int st6();
+int st7();
+int st8();
+int st9();
+int st10();
 
-void ex1();
-void ex2();
-void ex3();
+int ex1();
+int ex2();
+int ex3();
 
-void te1();
-void te2();
+int te1();
+int te2();
 
-void fa1();
-void fa2();
+int fa1();
+int fa2();
 
-void co1();
-void co2();
-void co3();
-void co4();
-void co5();
-void co6();
-void co7();
+int co1();
+int co2();
+int co3();
+int co4();
+int co5();
+int co6();
+int co7();
 
 typedef enum TCode{
-	puValVrLocl,/*	(short Displ)				Push lokale Variable	*/
-	puValVrMain,/*	(short Displ)				Push Main Variable		*/
-	puValVrGlob,/*	(short Displ)				Push globale Variable	*/
-	puAdrVrLocl,/*	(short Displ)				Push lokale Adresse		*/
-	puAdrVrMain,/*	(short Displ)				Push Main Adresse		*/
-	puAdrVrGlob,/*	(short Displ, short Proc)	Push globale Adresse	*/
-	puConst,/*		()							Push Konstante			*/
-	storeVal,/*		()							Wert -> Adresse			*/
-	getVal,/*		()							Ausgabe eines Wertes 	*/
-	/* Arithmethik 														*/
-	vzMinus,/*		()							Vorzeichenminus			*/
-	odd,/*			()							ungerade Zahl -> 0/1	*/
+	puValVrLocl,/*	(short Displ)				Push lokale Variable	*/ //0x00
+	puValVrMain,/*	(short Displ)				Push Main Variable		*/ //0x01
+	puValVrGlob,/*	(short Displ)				Push globale Variable	*/ //0x02
+	puAdrVrLocl,/*	(short Displ)				Push lokale Adresse		*/ //0x03
+	puAdrVrMain,/*	(short Displ)				Push Main Adresse		*/ //0x04
+	puAdrVrGlob,/*	(short Displ, short Proc)	Push globale Adresse	*/ //0x05
+	puConst,/*		()							Push Konstante			*/ //0x06
+	storeVal,/*		()							Wert -> Adresse			*/ //0x07
+	putVal,/*		()							Ausgabe Wert ->stdout	*/ //0x08
+	getVal,/*		()							Ausgabe eines Wertes 	*/ //0x09
+	/* Arithmethik 														*/ 
+	vzMinus,/*		()							Vorzeichenminus			*/ //0x0A
+	odd,/*			()							ungerade Zahl -> 0/1	*/ //0x0B
 	/* binaere Operatoren 												*/
-	OpAdd,/*		()							Addition				*/
-	OpSub,/*		()							Subtraktion				*/
-	OpMult,/*		()							Multiplikation			*/
-	OpDiv,/*		()							Division				*/
-	cmpEQ,/*		()							==						*/
-	cmpNE,/*		()							!=						*/
-	cmpLT,/*		()							<						*/
-	cmpGT,/*		()							>						*/
-	cmpLE,/*		()							<=						*/
-	cmpGE,/*		()							>=						*/
+	OpAdd,/*		()							Addition				*/ //0x0C
+	OpSub,/*		()							Subtraktion				*/ //0x0D
+	OpMult,/*		()							Multiplikation			*/ //0x0E
+	OpDiv,/*		()							Division				*/ //0x0F
+	cmpEQ,/*		()							==						*/ //0x10
+	cmpNE,/*		()							!=						*/ //0x11
+	cmpLT,/*		()							<						*/ //0x12
+	cmpGT,/*		()							>						*/ //0x13
+	cmpLE,/*		()							<=						*/ //0x14
+	cmpGE,/*		()							>=						*/ //0x15
 	/* Sprungbefehle 													*/
-	call,/*			(short ProcNr)				Prozeduraufruf			*/
-	retProc,/*		()							Rueckkehren				*/
-	jmp,/*			(short RelAdresse)			SPZZ innerhalb Fkt.		*/
-	jnot,/*			(short RelAdresse)			SPZZ i. Fkt., Bed Stack */
-	entryProc,/*	(short lenCode, short ProcIdx, short lenVar)		*/
-	EndOfCode
+	call,/*			(short ProcNr)				Prozeduraufruf			*/ //0x16
+	retProc,/*		()							Rueckkehren				*/ //0x17
+	jmp,/*			(short RelAdresse)			SPZZ innerhalb Fkt.		*/ //0x18
+	jnot,/*			(short RelAdresse)			SPZZ i. Fkt., Bed Stack */ //0x19
+	entryProc,/*	(short lenCode, short ProcIdx, short lenVar)		*/ //0x1A
+	putStrg,/*		(char[])					nicht implementiert		*/ //0x1B
+	EndOfCode															   //0x1C
 } tCode;
 
 int code(tCode Code,...);
