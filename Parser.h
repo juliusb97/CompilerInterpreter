@@ -39,8 +39,8 @@ static tBog gExpr[];
 
 static tBog gFact[]=
 {
-/* 0*/ {BgMo, {(ul)mcIdent	}, NULL, 5,		1},/*(0)---ident--->(E)*/
-/* 1*/ {BgMo, {(ul)mcNum 	}, NULL, 5,		2},/* +---number--->(E)*/
+/* 0*/ {BgMo, {(ul)mcIdent	}, &fa2, 5,		1},/*(0)---ident--->(E)*/
+/* 1*/ {BgMo, {(ul)mcNum 	}, &fa1, 5,		2},/* +---number--->(E)*/
 /* 2*/ {BgSy, {(ul)'('    	}, NULL, 3,		0},/*(+)----'('---->(3)*/
 /* 3*/ {BgGr, {(ul)gExpr  	}, NULL, 4,		0},/*(1)---express->(4)*/
 /* 4*/ {BgSy, {(ul)')'    	}, NULL, 5,		0},/*(0)----')'---->(E)*/
@@ -72,8 +72,8 @@ static tBog gCond[] =
 static tBog gExpr[] =
 {
 /* 0  */ {BgSy, {(ul)'-'	}, NULL, 1,		3},/* (0)----------'-'---------> expression	*/
-/* 1  */ {BgGr,	{(ul)gTerm	}, NULL, 2,		0},/* '-'----------term--------> 2			*/
-/* 2  */ {BgNl, {(ul)0		}, &ex1, 6,		0},/* (0)---------'odd'--------> expression	*/
+/* 1  */ {BgGr,	{(ul)gTerm	}, &ex1, 2,		0},/* '-'----------term--------> 2			*/
+/* 2  */ {BgNl, {(ul)0		}, NULL, 6,		0},/* (0)---------'odd'--------> expression	*/
 /* 3  */ {BgGr,	{(ul)gTerm	}, NULL, 2,		0},/* (0)----------term--------> 2			*/
 /* 4  */ {BgGr, {(ul)gTerm	}, &ex2, 2,		0},/* '+'----------term--------> 2			*/
 /* 5  */ {BgGr, {(ul)gTerm	}, &ex3, 2,		0},/* '+'----------term--------> 2			*/ //Perhaps obsolete?
@@ -88,8 +88,8 @@ static tBog gTerm[] =
 {
 /* 0  */ {BgGr, {(ul)gFact  }, NULL, 1,		0},/* (0)----------term---------> 2			*/
 /* 1  */ {BgNl, {(ul)0		}, NULL, 4,		0},/* factor--------------------> (E)		*/
-/* 2  */ {BgGr, {(ul)gFact  }, NULL, 1,		0},/* '*'----------factor-------> factor	*/
-/* 3  */ {BgGr, {(ul)gFact  }, NULL, 1,		0},/* '/'----------factor-------> factor	*/ //Perhaps obsolete?
+/* 2  */ {BgGr, {(ul)gFact  }, &te1, 1,		0},/* '*'----------factor-------> factor	*/
+/* 3  */ {BgGr, {(ul)gFact  }, &te2, 1,		0},/* '/'----------factor-------> factor	*/ //Perhaps obsolete?
 /* 4  */ {BgSy,	{(ul)'*'	}, NULL, 2,		5},/* NL-----------'*'----------> factor	*/
 /* 5  */ {BgSy,	{(ul)'/'	}, NULL, 2,		6},/* NL-----------'/'----------> factor	*/
 /* 6  */ {BgEn, {(ul)0		}, NULL, 0,		0} /* (E)-----------------------> Ende		*/

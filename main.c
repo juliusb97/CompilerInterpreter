@@ -285,25 +285,13 @@ tProc* createProc(tProc* pParent){
     return newProc;
 }
 
-int Search(char* name, tKz type){
-
-	/*
-	 * TODO:
-	 * Momentan könnte es möglich sein, dass eine Variable und
-	 * eine Konstante den gleichen Namen haben können?
-	 */
+tBez* Search(char* name){
 
 	tBez* start = procList->pLBez;
 	tBez* tmp 	= start;
 	
 	while(tmp != NULL){
-		if(tmp->Kz != type){
-			tmp = tmp->nxt;
-			continue;
-		} else {
-			if(strcmp(tmp->pName, name) == 0) return tmp;
-		}
-		
+		if(strcmp(tmp->pName, name) == 0) return tmp;
 		tmp = tmp->nxt;
 	}
 	
@@ -315,7 +303,7 @@ int NewVar(){
 	printf("New Variable\n");
 	#endif
 	
-	if(Search(Morph.Val.pStr, KzVar) != NOTFOUND){
+	if(Search(Morph.Val.pStr) != NOTFOUND){
 		printf("Variable identifier '%s' already exists (Error in line %d)\n", Morph.Val.pStr, Morph.PosLine + 1);
 		exit(FAIL);
 	}
@@ -341,7 +329,7 @@ int NewConstBez(){
 	printf("New Constant\n");
 	#endif
 	
-	if(Search(Morph.Val.pStr, KzConst) != NOTFOUND){
+	if(Search(Morph.Val.pStr) != NOTFOUND){
 		printf("Constant identifier '%s' already exists (Error in line %d)\n", Morph.Val.pStr, Morph.PosLine + 1);
 		exit(FAIL);
 	}
@@ -372,7 +360,7 @@ int newProc(){
     #endif
     
     //procList = procList->pParent;
-	if(Search(Morph.Val.pStr, KzProc) != NOTFOUND){
+	if(Search(Morph.Val.pStr) != NOTFOUND){
 		printf("Procedure identifier '%s' already exists (Error in line %d)\n", Morph.Val.pStr, Morph.PosLine + 1);
 		exit(FAIL);
 	}
@@ -541,22 +529,22 @@ int ex1(){
 }
 
 int ex2(){
-	code(opAdd);
+	code(OpAdd);
 	return 1;
 }
 
 int ex3(){
-	code(opSub);
+	code(OpSub);
 	return 1;
 }
 
 int te1(){
-	code(opMul);
+	code(OpMult);
 	return 1;
 }
 
 int te2(){
-	code(opDiv);
+	code(OpDiv);
 	return 1;
 }
 
@@ -567,7 +555,22 @@ int fa1(){
 }
 
 int fa2(){
-	Search(
+	tBez* bez = Search(Morph.Val.pStr);
+	
+	if(bez == NOTFOUND){
+		printf("Identifier %s not found\n", Morph.Val.pStr);
+		exit(FAIL);
+	} else if(bez->Kz == KzProc){
+		printf("Identifier %s is a procedure, needed: variable or constant\n", Morph.Val.pStr);
+	}
+	
+	if(bez->Kz == KzConst){
+		code(puConst, ((tConst*)(bez->pObj))->Idx);
+	}
+	
+	//TODO: Rest
+	
+	return 1;
 }
 
 int code(tCode Code,...)
@@ -648,7 +651,7 @@ int closeOFile(void)
 {
   char vBuf2[2];
   fseek(pOFile,0,SEEK_SET);
-  wr2ToCodeAtP(IdxProc,vBuf2);
+  wr2ToCodeAtP(procCounter,vBuf2);
   if (fwrite(vBuf2,2,1,pOFile)==2) return OK;
   else                             return FAIL;
 }

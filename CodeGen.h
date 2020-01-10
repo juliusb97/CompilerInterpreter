@@ -53,7 +53,7 @@ typedef enum TCode{
 	puAdrVrLocl,/*	(short Displ)				Push lokale Adresse		*/ //0x03
 	puAdrVrMain,/*	(short Displ)				Push Main Adresse		*/ //0x04
 	puAdrVrGlob,/*	(short Displ, short Proc)	Push globale Adresse	*/ //0x05
-	puConst,/*		()							Push Konstante			*/ //0x06
+	puConst,/*		(short Index)				Push Konstante			*/ //0x06
 	storeVal,/*		()							Wert -> Adresse			*/ //0x07
 	putVal,/*		()							Ausgabe Wert ->stdout	*/ //0x08
 	getVal,/*		()							Ausgabe eines Wertes 	*/ //0x09
