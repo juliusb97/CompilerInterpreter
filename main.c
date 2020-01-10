@@ -2,9 +2,11 @@
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
+#include <stdarg.h>
 #include "Lexer.h"
 #include "NameList.h"
 #include "Parser.h"
+#include "CodeGen.h"
 
 int initLex(char* fname){
 	char vName[128+1];
@@ -56,7 +58,6 @@ tMorph* Lex(void){
 
 		finalize();
 
-		//printf("Zeichen: %c\n", c);
 	}while(state != 0);
 
 	int keywordIdx = 0;
@@ -136,78 +137,7 @@ void writec(void){
 
 	return;
 }
-/*
-static void fl(void){
-	return;
-}
 
-//---- schreiben als Grossbuchstabe, lesen ----
-static void fgl (void){
-	*pBuf=(char)toupper(c);// oder  *Buf=(char)c&0xdf;
-	*(++pBuf)=0;
-	Morph.MLen++;
-	fl();
-}
-
-//---- schreiben, lesen ----
-static void fsl (void){
-	*pBuf=(char)c;
-	*(++pBuf)=0;
-	fl();
-}
-
-//---- schreiben, lesen, beenden ----
-static void fslb(void){
-	fsl();fb();
-}
-
-static void fb  (){
-	int i,j;
-	switch (lastZ){
-		//Identifier
-		case 1:
-			Morph.MC = mcSymb;
-			if(Morph.Val.pStr == NULL) Morph.Val.pStr = vBuf;
-			break;
-			// Doppelpunkt
-		case 3:
-			Morph.Val.Symb = vBuf[0];
-			Morph.MC = mcSymb;
-			break;
-			//Kleiner
-		case 4:
-			Morph.Val.Symb = vBuf[0];
-			Morph.MC = mcSymb;
-			break;
-			//Groesser
-		case 5:
-			Morph.Val.Symb = vBuf[0];
-			Morph.MC = mcSymb;
-			break;
-		case 0:
-			Morph.Val.Symb=vBuf[0];
-			Morph.MC =mcSymb;
-			break;
-			//Zahl
-		case 2: Morph.Val.Num=atol(vBuf);
-			Morph.MC =mcNum;
-			break;
-			//Ergibtzeichen
-		case 6: Morph.Val.Symb=(long)zERG;
-			Morph.MC =mcSymb;
-			break;
-			//KleinerGleich
-		case 7: Morph.Val.Symb=(long)zLE;
-			Morph.MC =mcSymb;
-			break;
-			//GroesserGleich
-		case 8: Morph.Val.Symb=(long)zGE;
-			Morph.MC =mcSymb;
-			break;
-	}
-	Z = 0;
-}
-*/
 int checkKeyword(tMorph* m){
 	int c, idx;
 	for(c = 0; c < MAXKEYWORDCLASSLENGTH; c++){
@@ -262,8 +192,9 @@ int parse(tBog* pGraph)
 	tBog* pBog=pGraph;
 	int succ=0;
 
-	//DEBUG
-	//LookupGraph(pBog);
+	#ifdef DEBUG_PARSE
+	LookupGraph(pBog);
+	#endif
 
 	if (Morph.MC==mcEmpty)  Lex();
 	while(1)
@@ -272,7 +203,7 @@ int parse(tBog* pGraph)
 			case BgNl:succ=1;                            break;
 			case BgSy:succ=(Morph.Val.Symb==pBog->BgX.S);break;
 			case BgMo:succ=(Morph.MC==(tMC)pBog->BgX.M); break;
-			case BgGr:succ=parse(pBog->BgX.G);           break;
+			case BgGr:succ=parse((tBog*)(pBog->BgX.G));           break;
 			case BgEn:depth--; return 1;  /* Ende erreichet - Erfolg */
 		}
 
@@ -285,11 +216,10 @@ int parse(tBog* pGraph)
 			else return FAIL;
 		else /* Morphem formal akzeptiert (eaten) */
 		{
-			//printf("Morphem formal akzeptiert.\n");
 			if (pBog->BgD & BgSy || pBog->BgD & BgMo) Lex();
 			pBog=pGraph+pBog->iNext;
 		}
-	}/* while */
+	}
 	depth--;
 }
 
@@ -368,7 +298,7 @@ int Search(char* name, tKz type){
 }
 
 int NewVar(){
-	#ifdef DEBUG
+	#ifdef DEBUG_NAMES
 	printf("New Variable\n");
 	#endif
 	
@@ -380,13 +310,13 @@ int NewVar(){
 	tBez* newBezeichner = createBez(Morph.Val.pStr);
 	newBezeichner->Kz = KzVar;
 	
-	#ifdef DEBUG
+	#ifdef DEBUG_NAMES
 	printf("Created Bezeichner\n");
 	#endif
 	
 	procList->pLBez->pObj = CreateVar();
 	
-	#ifdef DEBUG
+	#ifdef DEBUG_NAMES
 	printf("Created new Variable %s with relative address %d\n\n\n", procList->pLBez->pName, ((tVar*)(procList->pLBez->pObj))->Dspl);
 	#endif
 	
@@ -394,7 +324,7 @@ int NewVar(){
 }
 
 int NewConstBez(){
-	#ifdef DEBUG
+	#ifdef DEBUG_NAMES
 	printf("New Constant\n");
 	#endif
 	
@@ -406,7 +336,7 @@ int NewConstBez(){
 	tBez* newBezeichner = createBez(Morph.Val.pStr);
 	newBezeichner->Kz = KzConst;
 	
-	#ifdef DEBUG
+	#ifdef DEBUG_NAMES
 	printf("Created Bezeichner\n");
 	#endif
 	
@@ -416,7 +346,7 @@ int NewConstBez(){
 int NewConst(){
 	procList->pLBez->pObj = createConst(Morph.Val.Num);
 	
-	#ifdef DEBUG
+	#ifdef DEBUG_NAMES
 	printf("Created new Constant %s with value: %ld\n\n\n", procList->pLBez->pName, ((tConst*)(procList->pLBez->pObj))->Val);
 	#endif
 	
@@ -424,7 +354,7 @@ int NewConst(){
 }
 
 int newProc(){
-    #ifdef DEBUG
+    #ifdef DEBUG_NAMES
     printf("New Procedure\n");
     #endif
     
@@ -437,7 +367,7 @@ int newProc(){
     tBez* newBezeichner = createBez(Morph.Val.pStr);
     newBezeichner->Kz = KzProc;
     
-    #ifdef DEBUG
+    #ifdef DEBUG_NAMES
     printf("Created Bezeichner\n");
     #endif
     
@@ -446,7 +376,7 @@ int newProc(){
 	newBezeichner->pObj = newProcedure;
 	procList = newProcedure;
     
-    #ifdef DEBUG
+    #ifdef DEBUG_NAMES
     printf("Created Procedure-Block with no. %d and name %s\n\n\n", procList->IdxProc, newBezeichner->pName);
     #endif
     
@@ -456,7 +386,7 @@ int newProc(){
 
 void newProg(){
 
-	#ifdef DEBUG
+	#ifdef DEBUG_NAMES
 	printf("New Program\n");
 	#endif
 	
@@ -468,17 +398,10 @@ void newProg(){
 	
 	//printf("Created Bezeichner\n");
 	
-	#ifdef DEBUG
+	#ifdef DEBUG_NAMES
 	printf("Created Procedure-Block with no. %d\n\n\n", newProcedure->IdxProc);
 	#endif
 }
-
-/*
-void ReturnToParent(){
-	if(procList->pParent != NULL)
-		procList = procList->pParent;
-}
-*/
 
 int FreeDescriptions(){
 	tBez* start = procList->pLBez;
@@ -500,6 +423,98 @@ int FreeDescriptions(){
 	return 1;
 }
 
+void wr2ToCode(short x)
+{
+  *pCode++=(unsigned char)(x & 0xff);
+  *pCode++=(unsigned char)(x >> 8);
+}
+void wr2ToCodeAtP(short x,char*pD)
+{
+  * pD   =(unsigned char)(x & 0xff);
+  *(pD+1)=(unsigned char)(x >> 8);
+}
+
+int code(tCode Code,...)
+{
+  va_list ap;
+  short sarg;
+
+  if (pCode-vCode+MAX_LEN_OF_CODE>=LenCode)
+  {
+    char* xCode=realloc(vCode,(LenCode+=1024));
+	 if (xCode==NULL) exit(ENoMem);
+    pCode=xCode+(pCode-vCode);
+    vCode=xCode;
+  }
+  *pCode++=(char)Code;
+  va_start(ap,Code);
+  switch (Code)
+  {
+    /* Befehle mit 3 Parametern */
+    case entryProc:
+	       sarg=va_arg(ap,int);
+	       wr2ToCode(sarg);
+    /* Befehle mit 2 Parametern */
+    case puValVrGlob:
+    case puAdrVrGlob:
+	       sarg=va_arg(ap,int);
+	       wr2ToCode(sarg);
+    /* Befehle mit 1 Parameter */
+    case puValVrMain:
+    case puAdrVrMain:
+    case puValVrLocl:
+    case puAdrVrLocl:
+    case puConst:
+    case jmp :
+    case jnot:
+    case call:
+ 	       sarg=va_arg(ap,int); /* Prozedurnummer               */
+	       wr2ToCode(sarg);
+	       break;
+     /* keine Parameter */
+     default     : break;
+ }
+  va_end  (ap);
+  return OK;
+}
+
+int CodeOut(void)
+{
+  unsigned short Len=(unsigned short)(pCode-vCode);
+  wr2ToCodeAtP((short)Len,vCode+1);
+  wr2ToCodeAtP((short)pCurrPr->SpzzVar,vCode+5);
+  if (Len==fwrite(vCode,sizeof(char),Len,pOFile)) return OK;
+  else                                            return FAIL;
+}
+
+
+int openOFile(char* arg)
+{
+  long  i=0L;
+  char vName[128+1];
+
+  strcpy(vName,arg);
+  if (strstr(vName,".pl0")==NULL) strcat(vName,".cl0");
+  else *(strchr(vName,'.')+1)='c';
+
+  if ((pOFile=fopen(vName,"wb"))!=NULL) 
+  {
+    fwrite(&i,sizeof(int32_t),1,pOFile);
+    return OK;
+  }
+  else                                 return FAIL;
+  
+}
+
+int closeOFile(void)
+{
+  char vBuf2[2];
+  fseek(pOFile,0,SEEK_SET);
+  wr2ToCodeAtP(IdxProc,vBuf2);
+  if (fwrite(vBuf2,2,1,pOFile)==2) return OK;
+  else                             return FAIL;
+}
+
 int main(int argc, char* argv[]){
 
 	if(argc != 2){
@@ -517,31 +532,6 @@ int main(int argc, char* argv[]){
 	parse(gProgram);
     
     printf("Done.\n");
-
-/*
-	do{
-		tmp = Lex();
-
-		switch(tmp->MC){
-			case mcSymb:
-				printf("Morphem %-10s: %s\n", "mcSymb", vBuf);
-				break;
-			case mcNum:
-				printf("Morphem %-10s: %ld\n", "mcNum", tmp->Val.Num);
-				break;
-			case mcIdent:
-				printf("Morphem %-10s: %s\n", "mcIdent", tmp->Val.pStr);
-				if((keywordIdx = checkKeyword(tmp)) != -1)
-					printf("Keyword %-10s\n", keyWords[keywordIdx]);
-				break;
-			case mcEOF:
-			case mcEmpty:
-				break;
-		}
-
-		debugCounter++;
-	} while(debugCounter <= 200);
-*/
 
 	return 0;
 }

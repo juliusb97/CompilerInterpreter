@@ -48,7 +48,6 @@ static int keywordClasses[][MAXKEYWORDCLASSLENGTH] =
 /*9*/   { 7, -1, -1}
 };
 
-//typedef enum T_Fx {ifl=0x0, ifb=0x10, ifgl=0x20, ifsl=0x30, ifslb=0x40} tFx;
 typedef enum T_MC{mcEmpty, mcSymb, mcNum, mcIdent, mcEOF} tMC;
 typedef enum T_ZS{
 	zNIL,
@@ -69,21 +68,12 @@ typedef struct{
 } tMorph;
 
 static void        finalize (void);
-/*
-static void        fl       (void);
-static void        fb       (void);
-static void        fgl      (void);
-static void        fsl      (void);
-static void        fslb     (void);
-*/
 void               readc    (void);
 void               writec   (void);
 int                initLex  (char* fname);
 tMorph*            Lex      (void);
 
 typedef void (*FX)(void);
-//static FX vfx[] = {fl, fb, fgl, fsl, fslb};
-
 
 /*
 Character classes:
