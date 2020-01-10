@@ -5,8 +5,10 @@
 #include <stdarg.h>
 #include "Lexer.h"
 #include "NameList.h"
-#include "Parser.h"
 #include "CodeGen.h"
+#include "Parser.h"
+
+#define VCODE_DEFAULT_LEN 1024
 
 int initLex(char* fname){
 	char vName[128+1];
@@ -434,6 +436,45 @@ void wr2ToCodeAtP(short x,char*pD)
   *(pD+1)=(unsigned char)(x >> 8);
 }
 
+void pr1(){
+	fwrite(ConstBlock, sizeof(int), ConstCounter, pOFile);
+}
+
+void bl1(){
+	NewConstBez();
+}
+
+void bl2(){
+	NewConst();
+}
+
+void bl3(){
+	NewVar();
+}
+
+void bl4(){
+	newProc();
+}
+
+void bl5(){
+	code(retProc);
+
+	//TODO: Codelaenge bei entryProc nachtragen
+	CodeOut(); //wonky
+	FreeDescriptions(); //wonky
+}
+
+void bl6(){
+	vCode = (char*)malloc(VCODE_DEFAULT_LEN);
+	
+	if(vCode == NULL){
+		printf("Code buffer memory could not be allocated.");
+		exit(ENoMem);
+	}
+	
+	code(0, procList->IdxProc, procList->SpzzVar);
+}
+
 int code(tCode Code,...)
 {
   va_list ap;
@@ -446,8 +487,10 @@ int code(tCode Code,...)
     pCode=xCode+(pCode-vCode);
     vCode=xCode;
   }
+  
   *pCode++=(char)Code;
   va_start(ap,Code);
+  
   switch (Code)
   {
     /* Befehle mit 3 Parametern */
@@ -482,7 +525,7 @@ int CodeOut(void)
 {
   unsigned short Len=(unsigned short)(pCode-vCode);
   wr2ToCodeAtP((short)Len,vCode+1);
-  wr2ToCodeAtP((short)pCurrPr->SpzzVar,vCode+5);
+  wr2ToCodeAtP((short)procList->SpzzVar,vCode+5);
   if (Len==fwrite(vCode,sizeof(char),Len,pOFile)) return OK;
   else                                            return FAIL;
 }
@@ -527,10 +570,13 @@ int main(int argc, char* argv[]){
 	ConstCounter = 0;
 
 	printf("%s\n", (initLex(argv[1]))?"InitLex failed.\n":"");
+	
+	openOFile(argv[1]);	
 
 	newProg();
 	parse(gProgram);
     
+    closeOFile();
     printf("Done.\n");
 
 	return 0;
