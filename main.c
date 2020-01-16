@@ -298,6 +298,18 @@ tBez* Search(char* name){
 	return NOTFOUND;
 }
 
+tBez* SearchByVal(int val){
+   	tBez* start = procList->pLBez;
+	tBez* tmp 	= start;
+	
+	while(tmp != NULL){
+		if(((tConst*)(tmp->pObj))->Val == val && tmp->Kz == KzConst) return tmp;
+		tmp = tmp->nxt;
+	}
+	
+	return NOTFOUND;
+}
+
 int NewVar(){
 	#ifdef DEBUG_NAMES
 	printf("New Variable\n");
@@ -324,17 +336,21 @@ int NewVar(){
 	return 1;
 }
 
-int NewConstBez(){
+int NewConstBez(char* name){
 	#ifdef DEBUG_NAMES
 	printf("New Constant\n");
 	#endif
 	
-	if(Search(Morph.Val.pStr) != NOTFOUND){
+	if(name == NULL && Search(Morph.Val.pStr) != NOTFOUND){
 		printf("Constant identifier '%s' already exists (Error in line %d)\n", Morph.Val.pStr, Morph.PosLine + 1);
 		exit(FAIL);
 	}
 	
-	tBez* newBezeichner = createBez(Morph.Val.pStr);
+    tBez* newBezeichner = NULL;
+    if(name == NULL)
+    	newBezeichner = createBez(Morph.Val.pStr);
+    else
+        newBezeichner = createBez(name); 
 	newBezeichner->Kz = KzConst;
 	
 	#ifdef DEBUG_NAMES
@@ -447,7 +463,7 @@ int pr1(){
 }
 
 int bl1(){
-	NewConstBez();
+	NewConstBez(NULL);
 	
 	#ifdef DEBUG_CODEGEN
 	printf("Created new constant Bezeichner\n");
@@ -549,8 +565,20 @@ int te2(){
 }
 
 int fa1(){
-	//TODO
-	
+    printf("here\n");
+
+    tBez* tmp = SearchByVal(Morph.Val.Num);
+
+    char name[1024];
+    sprintf(name, "%ld", Morph.Val.Num);
+
+    if(tmp == NOTFOUND){
+        NewConstBez(name);
+        NewConst();
+        tmp = procList->pLBez;
+    }
+
+    code(puConst, ((tConst*)(tmp->pObj))->Idx);
 	return 1;
 }
 

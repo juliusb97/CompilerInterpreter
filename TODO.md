@@ -1,6 +1,6 @@
 # TODO
 
-## TODO
+## Todo
  - Speicher-belegende Dinge aus .h in .c und sinnvoll modularisieren
 
 ## Done
