@@ -1,8 +1,0 @@
- X Keyword-/Sonderzeichencodes entweder um alle Sonderzeichen ergänzen oder Codes einzelner Zeichen entfernen
- X Speicher-zuweisende Dinge aus Header-File entfernen
- X tMorphem Morph als extern definieren
- X Morphemcode ändern, wenn Schlüsselwort erkannt
- X Alternativbögen korrigieren
- X Wie funktionieren Vergleiche einzelner Zeichen im Parser? (in pStr)
- - Speicher-belegende Dinge aus .h in .c und sinnvoll modularisieren
- X Löschfunktion für Sub-Namenslisten
