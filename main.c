@@ -673,7 +673,7 @@ int st9(){ // TODO: reevaluate
 		exit(FAIL);
 	}
 	
-	if(tmp->Kz != KzProc){
+	if(tmp->Kz != KzVar){
 		printf("Identifier %s is a procedure or constant, needed: variable (line: %d)\n", Morph.Val.pStr, Morph.PosLine);
 		exit(FAIL);
 	}

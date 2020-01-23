@@ -91,7 +91,7 @@ static tBog gTerm[] =
 /* 2  */ {BgGr, {(ul)gFact  }, &te1, 1,		0},/* '*'----------factor-------> factor	*/
 /* 3  */ {BgGr, {(ul)gFact  }, &te2, 1,		0},/* '/'----------factor-------> factor	*/ //Perhaps obsolete?
 /* 4  */ {BgSy,	{(ul)'*'	}, NULL, 2,		5},/* NL-----------'*'----------> factor	*/
-/* 5  */ {BgSy,	{(ul)'/'	}, NULL, 2,		6},/* NL-----------'/'----------> factor	*/
+/* 5  */ {BgSy,	{(ul)'/'	}, NULL, 3,		6},/* NL-----------'/'----------> factor	*/
 /* 6  */ {BgEn, {(ul)0		}, NULL, 0,		0} /* (E)-----------------------> Ende		*/
 };
 
@@ -112,9 +112,9 @@ static tBog gStmnt[] = {
 /* 13 */ {BgSy, {(ul)zEND	}, NULL,22,	   14},
 /* 14 */ {BgSy, {(ul)';'	}, NULL,12,		0},
 /* 15 */ {BgSy, {(ul)zCLL	}, NULL,16,	   17},
-/* 16 */ {BgMo, {(ul)mcIdent}, NULL,22,		0},
-/* 17 */ {BgSy, {(ul)'?'	}, &st9,18,	   19},
-/* 18 */ {BgMo, {(ul)mcIdent}, NULL,22,		0},
+/* 16 */ {BgMo, {(ul)mcIdent}, &st8,22,		0},
+/* 17 */ {BgSy, {(ul)'?'	}, NULL,18,	   19},
+/* 18 */ {BgMo, {(ul)mcIdent}, &st9,22,		0},
 /* 19 */ {BgSy, {(ul)'!'	}, NULL,20,	   21},
 /* 20 */ {BgGr, {(ul)gExpr	}, &st10,22,	0},
 /* 21 */ {BgNl, {(ul)0		}, NULL,22,		0},
