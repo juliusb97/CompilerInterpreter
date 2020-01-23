@@ -583,6 +583,7 @@ int st3(){
     
     newLabel->nxt = LabelList;
     newLabel->iJmp = (void*)(pCode) + 1;
+    LabelList = newLabel;
 
     code(jnot, 0);
 
@@ -590,13 +591,13 @@ int st3(){
 }
 
 int st4(){
-    tLabl* nxt = LabelList->nxt;
+	tLabl* nxt = LabelList->nxt;
     long target = (long)(LabelList->iJmp);
     
     free(LabelList);
     LabelList = nxt;
 
-    wr2ToCodeAtP(pCode - target, target);
+    wr2ToCodeAtP(pCode - target - 2, target);
 
     return 1;
 }
