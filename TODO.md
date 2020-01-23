@@ -2,6 +2,8 @@
 
 ## Todo
  - Speicher-belegende Dinge aus .h in .c und sinnvoll modularisieren
+ - Codegenerierungsfunktionen in Bögen ergänzen
+ - Herausfinden was Local, Main, Global jeweils bedeuten
 
 ## Done
  - Keyword-/Sonderzeichencodes entweder um alle Sonderzeichen ergänzen oder Codes einzelner Zeichen entfernen

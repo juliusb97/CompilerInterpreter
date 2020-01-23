@@ -298,6 +298,20 @@ tBez* Search(char* name){
 	return NOTFOUND;
 }
 
+tBez* SearchGlobal(char* name){
+	tBez* tmp = NOTFOUND;
+	tProc* procListCopy = procList;
+	
+	while(procList->pParent != NULL && tmp == NOTFOUND){
+		tmp = Search(name);
+		procList = procList->pParent;
+	}
+	
+	procList = procListCopy;
+	
+	return tmp;
+}
+
 tBez* SearchByVal(int val){
    	tBez* start = procList->pLBez;
 	tBez* tmp 	= start;
@@ -534,8 +548,78 @@ int bl6(){
 	return 1;
 }
 
+int st1(){
+	tBez* tmp = SearchGlobal(Morph.Val.pStr);
+	
+	if(tmp == NOTFOUND){
+		printf("Identifier %s not found (line: %d)\n", Morph.Val.pStr, Morph.PosLine);
+		exit(FAIL);
+	}
+	
+	if(tmp->Kz != KzVar){
+		printf("Identifier %s is a procedure or constant, needed: variable (line: %d)\n", Morph.Val.pStr, Morph.PosLine);
+		exit(FAIL);
+	}
+
+	if(procList == root)
+		code(puAdrVrMain, ((tVar*)(tmp->pObj))->Dspl);
+	else
+		code(puAdrVrGlob, ((tVar*)(tmp->pObj))->Dspl);
+	
+	//TODO: What is puAdrVrLocal?
+	return 1;
+}
+
+int st2(){
+	code(storeVal);
+	return 1;
+}
+
+int st8(){
+	tBez* tmp = SearchGlobal(Morph.Val.pStr);
+	
+	if(tmp == NOTFOUND){
+		printf("Identifier %s not found (line: %d)\n", Morph.Val.pStr, Morph.PosLine);
+		exit(FAIL);
+	}
+	
+	if(tmp->Kz != KzProc){
+		printf("Identifier %s is a variable or constant, needed: procedure (line: %d)\n", Morph.Val.pStr, Morph.PosLine);
+		exit(FAIL);
+	}
+	
+	code(call, ((tProc*)(tmp->pObj))->IdxProc);
+	
+	return 1;
+}
+
+int st9(){
+	
+	tBez* tmp = SearchGlobal(Morph.Val.pStr);
+	
+	if(tmp == NOTFOUND){
+		printf("Identifier %s not found (line: %d)\n", Morph.Val.pStr, Morph.PosLine);
+		exit(FAIL);
+	}
+	
+	if(tmp->Kz != KzProc){
+		printf("Identifier %s is a procedure or constant, needed: variable (line: %d)\n", Morph.Val.pStr, Morph.PosLine);
+		exit(FAIL);
+	}
+	
+	if(procList == root)
+		code(puAdrVrMain, ((tVar*)(tmp->pObj))->Dspl);
+	else
+		code(puAdrVrGlob, ((tVar*)(tmp->pObj))->Dspl);
+	
+	code(getVal);
+	
+	return 1;
+}
+
 int st10(){
 	code(putVal);
+	
 	return 1;
 }
 
@@ -583,20 +667,77 @@ int fa1(){
 }
 
 int fa2(){
-	tBez* bez = Search(Morph.Val.pStr);
+	tBez* bez = SearchGlobal(Morph.Val.pStr);
 	
 	if(bez == NOTFOUND){
 		printf("Identifier %s not found (line: %d)\n", Morph.Val.pStr, Morph.PosLine + 1);
 		exit(FAIL);
 	} else if(bez->Kz == KzProc){
 		printf("Identifier %s is a procedure, needed: variable or constant (line: %d)\n", Morph.Val.pStr, Morph.PosLine + 1);
+        exit(FAIL);
 	}
 	
 	if(bez->Kz == KzConst){
 		code(puConst, ((tConst*)(bez->pObj))->Idx);
+	} else{
+		if(procList == root){
+			code(puValVrMain, ((tVar*)(bez->pObj))->Dspl);
+		} else{
+			code(puValVrGlob, ((tVar*)(bez->pObj))->Dspl, procList->IdxProc);
+		}
 	}
 	
-	//TODO: Rest
+	return 1;
+}
+
+int co1(){
+	code(odd);
+	return 1;
+}
+
+int co2(){
+	cmpSymb = '=';
+
+	return 1;
+}
+
+int co3(){
+	cmpSymb = '#';
+	
+	return 1;
+}
+
+int co4(){
+	cmpSymb = '<';
+	
+	return 1;
+}
+
+int co5(){
+	cmpSymb = zLE;
+	
+	return 1;
+}
+
+int co6(){
+	cmpSymb = '>';
+	
+	return 1;
+}
+
+int co7(){
+	cmpSymb = zGE;
+}
+
+int co8(){
+	switch(cmpSymb){
+		case '=': code(cmpEQ); break;
+		case '#': code(cmpNE); break;
+		case '<': code(cmpLT); break;
+		case zLE: code(cmpLE); break;
+		case '>': code(cmpGT); break;
+		case zGE: code(cmpGE); break;
+	}
 	
 	return 1;
 }

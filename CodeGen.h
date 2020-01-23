@@ -56,7 +56,7 @@ typedef enum TCode{
 	puConst,/*		(short Index)				Push Konstante			*/ //0x06
 	storeVal,/*		()							Wert -> Adresse			*/ //0x07
 	putVal,/*		()							Ausgabe Wert ->stdout	*/ //0x08
-	getVal,/*		()							Ausgabe eines Wertes 	*/ //0x09
+	getVal,/*		()							Eingabe eines Wertes 	*/ //0x09
 	/* Arithmethik 														*/ 
 	vzMinus,/*		()							Vorzeichenminus			*/ //0x0A
 	odd,/*			()							ungerade Zahl -> 0/1	*/ //0x0B
@@ -83,3 +83,4 @@ typedef enum TCode{
 
 int code(tCode Code,...);
 int CodeOut();
+int cmpSymb;
