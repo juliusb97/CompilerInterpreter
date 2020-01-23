@@ -71,7 +71,8 @@ tMorph* Lex(void){
 		Morph.Val.Symb = *(Morph.Val.pStr);
 	}
 
-	if(Morph.Val.Symb == mcEmpty)
+//	if(Morph.Val.Symb == mcEmpty)
+	if(Morph.MC == mcEmpty)
 		return Lex();
 	else return &Morph;
 }
@@ -262,7 +263,7 @@ tBez* createBez(char* pBez){
     tBez* newBez = malloc(sizeof(tBez));
     
 	newBez->nxt 	= procList->pLBez;
-    newBez->IdxProc = procCounter-1; //TODO: Check if procCounter or procCounter+1
+    newBez->IdxProc = procCounter-1;
     newBez->Len 	= strlen(pBez);
     newBez->pName 	= (char*)malloc(newBez->Len + 1);
     strcpy(newBez->pName, pBez);
@@ -602,6 +603,49 @@ int st4(){
     return 1;
 }
 
+int st5(){
+	tLabl* newLabel = (tLabl*)malloc(sizeof(tLabl));
+	
+	newLabel->nxt = LabelList;
+	newLabel->iJmp = (void*)(pCode) + 1;
+	LabelList = newLabel;
+	
+	return 1;
+}
+
+int st6(){
+    tLabl* newLabel = (tLabl*)malloc(sizeof(tLabl));
+    
+    newLabel->nxt = LabelList;
+    newLabel->iJmp = (void*)(pCode) + 1;
+    LabelList = newLabel;
+
+    code(jnot, 0);
+
+    return 1;
+}
+
+int st7(){
+
+	tLabl* nxt = LabelList->nxt;
+    long target1 = (long)(LabelList->iJmp);
+    
+    free(LabelList);
+    LabelList = nxt;
+    
+    wr2ToCodeAtP(pCode - target1 + 1, target1);
+    
+    nxt = LabelList->nxt;
+    long target2 = (long)(LabelList->iJmp);
+    
+    free(LabelList);
+    LabelList = nxt;
+    
+    code(jmp, ~((long)pCode - target2) - 3);
+
+	return 1;
+}
+
 int st8(){
 	tBez* tmp = SearchGlobal(Morph.Val.pStr);
 	
@@ -620,7 +664,7 @@ int st8(){
 	return 1;
 }
 
-int st9(){
+int st9(){ // TODO: reevaluate
 	
 	tBez* tmp = SearchGlobal(Morph.Val.pStr);
 	
@@ -683,7 +727,7 @@ int fa1(){
     tBez* tmp = SearchByVal(Morph.Val.Num);
 
     char name[1024];
-    sprintf(name, "%ld", Morph.Val.Num);
+    sprintf(name, "c%ld", Morph.Val.Num);
 
     if(tmp == NOTFOUND){
         NewConstBez(name);

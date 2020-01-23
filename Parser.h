@@ -78,7 +78,7 @@ static tBog gExpr[] =
 /* 4  */ {BgGr, {(ul)gTerm	}, &ex2, 2,		0},/* '+'----------term--------> 2			*/
 /* 5  */ {BgGr, {(ul)gTerm	}, &ex3, 2,		0},/* '+'----------term--------> 2			*/ //Perhaps obsolete?
 /* 6  */ {BgSy,	{(ul)'+'	}, NULL, 4,		7},/* NL-----------'+'---------> term		*/
-/* 7  */ {BgSy,	{(ul)'-'	}, NULL, 4,		8},/* NL-----------'-'---------> term		*/
+/* 7  */ {BgSy,	{(ul)'-'	}, NULL, 5,		8},/* NL-----------'-'---------> term		*/
 /* 8  */ {BgEn, {(ul)0		}, NULL, 0,		0} /* NL-----------------------> Ende		*/
 /* 9  */ 
 /* 10 */ 
@@ -103,17 +103,17 @@ static tBog gStmnt[] = {
 /* 4  */ {BgGr, {(ul)gCond	}, &st3, 5,		0},
 /* 5  */ {BgSy, {(ul)zTHN	}, NULL, 6,		0},
 /* 6  */ {BgGr, {(ul)gStmnt	}, &st4,22,		0},
-/* 7  */ {BgSy, {(ul)zWHL	}, NULL, 8,	   11},
-/* 8  */ {BgGr, {(ul)gCond	}, NULL, 9,		0},
+/* 7  */ {BgSy, {(ul)zWHL	}, &st5, 8,	   11},
+/* 8  */ {BgGr, {(ul)gCond	}, &st6, 9,		0},
 /* 9  */ {BgSy, {(ul)zDO	}, NULL,10,		0},
-/* 10 */ {BgGr, {(ul)gStmnt	}, NULL,22,		0},
+/* 10 */ {BgGr, {(ul)gStmnt	}, &st7,22,		0},
 /* 11 */ {BgSy, {(ul)zBGN	}, NULL,12,	   15},
 /* 12 */ {BgGr, {(ul)gStmnt	}, NULL,13,	    0},
 /* 13 */ {BgSy, {(ul)zEND	}, NULL,22,	   14},
 /* 14 */ {BgSy, {(ul)';'	}, NULL,12,		0},
 /* 15 */ {BgSy, {(ul)zCLL	}, NULL,16,	   17},
 /* 16 */ {BgMo, {(ul)mcIdent}, NULL,22,		0},
-/* 17 */ {BgSy, {(ul)'?'	}, NULL,18,	   19},
+/* 17 */ {BgSy, {(ul)'?'	}, &st9,18,	   19},
 /* 18 */ {BgMo, {(ul)mcIdent}, NULL,22,		0},
 /* 19 */ {BgSy, {(ul)'!'	}, NULL,20,	   21},
 /* 20 */ {BgGr, {(ul)gExpr	}, &st10,22,	0},
