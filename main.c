@@ -583,7 +583,7 @@ int st3(){
     tLabl* newLabel = (tLabl*)malloc(sizeof(tLabl));
     
     newLabel->nxt = LabelList;
-    newLabel->iJmp = (void*)(pCode) + 1;
+    newLabel->iJmp = (long)((void*)(pCode) + 1);
     LabelList = newLabel;
 
     code(jnot, 0);
@@ -598,7 +598,7 @@ int st4(){
     free(LabelList);
     LabelList = nxt;
 
-    wr2ToCodeAtP(pCode - target - 2, target);
+    wr2ToCodeAtP((short)(pCode - target - 2), (char*)target);
 
     return 1;
 }
@@ -607,7 +607,7 @@ int st5(){
 	tLabl* newLabel = (tLabl*)malloc(sizeof(tLabl));
 	
 	newLabel->nxt = LabelList;
-	newLabel->iJmp = (void*)(pCode) + 1;
+	newLabel->iJmp = (long)((void*)(pCode) + 1);
 	LabelList = newLabel;
 	
 	return 1;
@@ -617,7 +617,7 @@ int st6(){
     tLabl* newLabel = (tLabl*)malloc(sizeof(tLabl));
     
     newLabel->nxt = LabelList;
-    newLabel->iJmp = (void*)(pCode) + 1;
+    newLabel->iJmp = (long)((void*)(pCode) + 1);
     LabelList = newLabel;
 
     code(jnot, 0);
@@ -633,7 +633,7 @@ int st7(){
     free(LabelList);
     LabelList = nxt;
     
-    wr2ToCodeAtP(pCode - target1 + 1, target1);
+    wr2ToCodeAtP((short)(pCode - target1 + 1), (char*)target1);
     
     nxt = LabelList->nxt;
     long target2 = (long)(LabelList->iJmp);
@@ -722,8 +722,6 @@ int te2(){
 }
 
 int fa1(){
-    printf("here\n");
-
     tBez* tmp = SearchByVal(Morph.Val.Num);
 
     char name[1024];
