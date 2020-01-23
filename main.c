@@ -301,11 +301,14 @@ tBez* Search(char* name){
 tBez* SearchGlobal(char* name){
 	tBez* tmp = NOTFOUND;
 	tProc* procListCopy = procList;
-	
-	while(procList->pParent != NULL && tmp == NOTFOUND){
+    int isRoot = 0;	
+
+    do{
 		tmp = Search(name);
-		procList = procList->pParent;
-	}
+        if(isRoot) break;		
+        procList = procList->pParent;
+        isRoot = (procList == root);
+	}while(tmp == NOTFOUND);
 	
 	procList = procListCopy;
 	
@@ -519,9 +522,8 @@ int bl4(){
 int bl5(){
 	code(retProc);
 
-	//TODO: Codelaenge bei entryProc nachtragen
-	CodeOut(); //wonky
-	FreeDescriptions(); //wonky
+	CodeOut();
+	FreeDescriptions(); //TODO: reevaluate
 	
 	#ifdef DEBUG_CODEGEN
 	printf("Wrote procedure\n");
@@ -563,16 +565,36 @@ int st1(){
 
 	if(procList == root)
 		code(puAdrVrMain, ((tVar*)(tmp->pObj))->Dspl);
+    else if(procList->IdxProc == tmp->IdxProc)
+        code(puAdrVrLocl, ((tVar*)(tmp->pObj))->Dspl);
 	else
-		code(puAdrVrGlob, ((tVar*)(tmp->pObj))->Dspl);
+		code(puAdrVrGlob, ((tVar*)(tmp->pObj))->Dspl, tmp->IdxProc);
 	
-	//TODO: What is puAdrVrLocal?
 	return 1;
 }
 
 int st2(){
 	code(storeVal);
 	return 1;
+}
+
+int st3(){
+    tLabl* newLabel = (tLabl*)malloc(sizeof(tLabl));
+    
+    newLabel->nxt = LabelList;
+    newLabel->iJmp = 0;
+
+    return 1;
+}
+
+int st4(){
+    tLabl* nxt = LabelList->nxt;
+    long target = LabelList->iJmp;
+    
+    free(LabelList);
+    LabelList = nxt;
+
+    return 1;
 }
 
 int st8(){
@@ -609,8 +631,10 @@ int st9(){
 	
 	if(procList == root)
 		code(puAdrVrMain, ((tVar*)(tmp->pObj))->Dspl);
-	else
-		code(puAdrVrGlob, ((tVar*)(tmp->pObj))->Dspl);
+	else if(tmp->IdxProc == procList->IdxProc)
+        code(puAdrVrLocl, ((tVar*)(tmp->pObj))->Dspl);
+    else
+		code(puAdrVrGlob, ((tVar*)(tmp->pObj))->Dspl, tmp->IdxProc);
 	
 	code(getVal);
 	
@@ -682,8 +706,10 @@ int fa2(){
 	} else{
 		if(procList == root){
 			code(puValVrMain, ((tVar*)(bez->pObj))->Dspl);
-		} else{
-			code(puValVrGlob, ((tVar*)(bez->pObj))->Dspl, procList->IdxProc);
+		} else if(procList->IdxProc == bez->IdxProc){
+            code(puValVrLocl, ((tVar*)(bez->pObj))->Dspl);
+        } else{
+			code(puValVrGlob, ((tVar*)(bez->pObj))->Dspl, bez->IdxProc);
 		}
 	}
 	

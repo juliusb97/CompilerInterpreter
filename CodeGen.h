@@ -8,6 +8,14 @@ static char* vCode;
 static int LenCode;
 static tProc* pCurrPr;
 
+typedef struct tLABL{
+    tKz Kz;
+    long iJmp;
+    struct tLABL* nxt;
+}tLabl;
+
+static tLabl* LabelList;
+
 int pr1();
 
 int bl1();
@@ -45,6 +53,7 @@ int co4();
 int co5();
 int co6();
 int co7();
+int co8();
 
 typedef enum TCode{
 	puValVrLocl,/*	(short Displ)				Push lokale Variable	*/ //0x00

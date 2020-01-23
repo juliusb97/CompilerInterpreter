@@ -57,15 +57,15 @@ static tBog gProgram[] =
 static tBog gCond[] =
 {
 /* 0  */ {BgSy, {(ul)zODD	}, NULL, 1, 	2},/* (0)---------'odd'--------> expression	*/
-/* 1  */ {BgGr, {(ul)gExpr	}, NULL,10, 	0},/* 'odd'-------expression---> (E)		*/
+/* 1  */ {BgGr, {(ul)gExpr	}, &co1,10, 	0},/* 'odd'-------expression---> (E)		*/
 /* 2  */ {BgGr, {(ul)gExpr	}, NULL, 3,		0},/* (0)---------expression---> '='		*/
-/* 3  */ {BgSy, {(ul)'='	}, NULL, 9,		4},/* expression--'='----------> expression	*/
-/* 4  */ {BgSy, {(ul)'#'	}, NULL, 9,		5},/* expression--'#'----------> expression	*/
-/* 5  */ {BgSy, {(ul)'<'	}, NULL, 9,		6},/* expression--'<'----------> expression */
-/* 6  */ {BgSy, {(ul)zLE	}, NULL, 9,		7},/* expression--'<='---------> expression */
-/* 7  */ {BgSy, {(ul)'>'	}, NULL, 9,		8},/* expression--'>'----------> expression */
-/* 8  */ {BgSy, {(ul)zGE	}, NULL, 9,		0},/* expression--'>='---------> expression */
-/* 9  */ {BgGr,	{(ul)gExpr	}, NULL,10,		0},/* mcSymb------expr---------> (E)		*/
+/* 3  */ {BgSy, {(ul)'='	}, &co2, 9,		4},/* expression--'='----------> expression	*/
+/* 4  */ {BgSy, {(ul)'#'	}, &co3, 9,		5},/* expression--'#'----------> expression	*/
+/* 5  */ {BgSy, {(ul)'<'	}, &co4, 9,		6},/* expression--'<'----------> expression */
+/* 6  */ {BgSy, {(ul)zLE	}, &co5, 9,		7},/* expression--'<='---------> expression */
+/* 7  */ {BgSy, {(ul)'>'	}, &co6, 9,		8},/* expression--'>'----------> expression */
+/* 8  */ {BgSy, {(ul)zGE	}, &co7, 9,		0},/* expression--'>='---------> expression */
+/* 9  */ {BgGr,	{(ul)gExpr	}, &co8,10,		0},/* mcSymb------expr---------> (E)		*/
 /* 10 */ {BgEn,	{(ul)0		}, NULL, 0,		0},/* (E)----------------------> Ende		*/
 };
 
@@ -96,9 +96,9 @@ static tBog gTerm[] =
 };
 
 static tBog gStmnt[] = {
-/* 0  */ {BgMo, {(ul)mcIdent}, NULL, 1,		3},
+/* 0  */ {BgMo, {(ul)mcIdent}, &st1, 1,		3},
 /* 1  */ {BgSy, {(ul)zERG	}, NULL, 2,		0},
-/* 2  */ {BgGr, {(ul)gExpr	}, NULL,22,		0},
+/* 2  */ {BgGr, {(ul)gExpr	}, &st2,22,		0},
 /* 3  */ {BgSy, {(ul)zIF	}, NULL, 4,		7},
 /* 4  */ {BgGr, {(ul)gCond	}, NULL, 5,		0},
 /* 5  */ {BgSy, {(ul)zTHN	}, NULL, 6,		0},
