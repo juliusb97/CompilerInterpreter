@@ -262,7 +262,7 @@ tBez* createBez(char* pBez){
     tBez* newBez = malloc(sizeof(tBez));
     
 	newBez->nxt 	= procList->pLBez;
-    newBez->IdxProc = procCounter; //TODO: Check if procCounter or procCounter+1
+    newBez->IdxProc = procCounter-1; //TODO: Check if procCounter or procCounter+1
     newBez->Len 	= strlen(pBez);
     newBez->pName 	= (char*)malloc(newBez->Len + 1);
     strcpy(newBez->pName, pBez);
