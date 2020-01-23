@@ -582,17 +582,21 @@ int st3(){
     tLabl* newLabel = (tLabl*)malloc(sizeof(tLabl));
     
     newLabel->nxt = LabelList;
-    newLabel->iJmp = 0;
+    newLabel->iJmp = (void*)(pCode) + 1;
+
+    code(jnot, 0);
 
     return 1;
 }
 
 int st4(){
     tLabl* nxt = LabelList->nxt;
-    long target = LabelList->iJmp;
+    long target = (long)(LabelList->iJmp);
     
     free(LabelList);
     LabelList = nxt;
+
+    wr2ToCodeAtP(pCode - target, target);
 
     return 1;
 }
