@@ -586,10 +586,10 @@ int fa2(){
 	tBez* bez = Search(Morph.Val.pStr);
 	
 	if(bez == NOTFOUND){
-		printf("Identifier %s not found\n", Morph.Val.pStr);
+		printf("Identifier %s not found (line: %d)\n", Morph.Val.pStr, Morph.PosLine + 1);
 		exit(FAIL);
 	} else if(bez->Kz == KzProc){
-		printf("Identifier %s is a procedure, needed: variable or constant\n", Morph.Val.pStr);
+		printf("Identifier %s is a procedure, needed: variable or constant (line: %d)\n", Morph.Val.pStr, Morph.PosLine + 1);
 	}
 	
 	if(bez->Kz == KzConst){
