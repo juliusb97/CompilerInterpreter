@@ -1,0 +1,13 @@
+var sq;
+
+procedure p1;
+begin
+	sq := sq * sq;
+	!sq
+end;
+
+begin
+	?sq;
+	call p1;
+	call p1
+end.

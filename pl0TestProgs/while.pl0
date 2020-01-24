@@ -1,0 +1,13 @@
+var b,a;
+
+begin
+	b := 3;
+	a := 5;
+	while b > 0 do
+	begin
+		b := b - 1;
+		a := a * 3
+	end;
+	!a
+end.
+		

@@ -1,0 +1,8 @@
+var a;
+
+begin
+	a := 10;
+	!a;
+	?a;
+	!a
+end.

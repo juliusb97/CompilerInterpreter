@@ -1,0 +1,6 @@
+var a;
+begin
+	a := 1;
+	if a > 10 then a := 6;
+	!a
+end.
