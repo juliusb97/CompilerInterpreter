@@ -1,12 +1,12 @@
 #define MAX_LEN_OF_CODE 81
 #define ENoMem -2
 
-static FILE* pOFile;
-static int IdxProc;
-static char* pCode;
-static char* vCode;
-static int LenCode;
-static tProc* pCurrPr;
+extern FILE* pOFile;
+extern int IdxProc;
+extern char* pCode;
+extern char* vCode;
+extern int LenCode;
+extern tProc* pCurrPr;
 
 typedef struct tLABL{
     tKz Kz;
@@ -14,7 +14,7 @@ typedef struct tLABL{
     struct tLABL* nxt;
 }tLabl;
 
-static tLabl* LabelList;
+extern tLabl* LabelList;
 
 int pr1();
 
@@ -90,6 +90,10 @@ typedef enum TCode{
 	EndOfCode															   //0x1C
 } tCode;
 
+void wr2ToCode(short x);
+void wr2ToCodeAtP(short x, char* pD);
 int code(tCode Code,...);
 int CodeOut();
-int cmpSymb;
+int openOFile(char* arg);
+int closeOFile();
+extern int cmpSymb;

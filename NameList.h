@@ -1,3 +1,7 @@
+#define FAIL -1
+#define OK 0
+#define NOTFOUND 0
+
 typedef enum KZs{
     KzProc, KzConst, KzVar
 } Kzs;
@@ -51,6 +55,8 @@ int     createVar(void);
 tProc*  createProc(tProc*pParent);
 tBez*   searchBez(tProc*pProc,char* pBez);
 tBez*   searchBezGlobal(char* pBez);
+tBez*	SearchGlobal(char* pBez);
+tBez*	SearchByVal(int val);
 
 int		NewVar();
 int		NewConstBez();
@@ -59,8 +65,8 @@ int     newProc();
 void	newProg();
 int		FreeDescriptions();
 
-static	tProc*	 root;
-static  tProc*   procList;
-static  int procCounter = 0;
-static  int ConstCounter = 0;
-static  int* ConstBlock;
+extern	tProc*	 root;
+extern  tProc*   procList;
+extern  int procCounter;
+extern  int ConstCounter;
+extern  int* ConstBlock;
