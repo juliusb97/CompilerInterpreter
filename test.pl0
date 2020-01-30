@@ -1,0 +1,30 @@
+const null=0, eins=1;
+var a,b;
+
+    procedure p;
+    var x;
+        procedure p1;
+        var i;
+        begin
+            while x > 0 do
+            begin
+                i:=b;
+                while i > 0 do
+                begin
+                    !x*i;
+                    i:=i-1
+                end;
+                x:=x-1
+            end
+        end;
+    begin
+        x:=a;
+        call p1
+    end;
+begin
+    ?a;
+    ?b;
+    call p
+end.
+        
+    
