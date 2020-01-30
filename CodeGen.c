@@ -73,7 +73,7 @@ int bl5(){
 	code(retProc);
 
 	CodeOut();
-	FreeDescriptions(); //TODO: reevaluate
+	FreeDescriptions();
 	
 	#ifdef DEBUG_CODEGEN
 	printf("Wrote procedure\n");

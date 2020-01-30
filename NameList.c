@@ -32,8 +32,6 @@ tConst* createConst(long Val){
     void* ret = realloc(ConstBlock, sizeof(int) * ConstCounter);
     if(ret == NULL) printf("Realloc in const-Creation failed\n");
     ConstBlock[ConstCounter-1] = Val;
-    
-    //Frage: siehe Algorithmus in Folie
 	
 	return newConst;
 }
@@ -74,16 +72,6 @@ tBez* Search(char* name){
 	
 	while(tmp != NULL){
 		if(strcmp(tmp->pName, name) == 0) return tmp;
-		/*
-        if(tmp->Kz == KzProc){
-            tProc* procListCopy = procList;
-            procList = tmp->pObj;
-            tmp2 = tmp;
-            tmp2 = Search(name);
-            procList = procListCopy;
-            if(tmp2 != NOTFOUND) return tmp2;
-        }
-        */
 		tmp = tmp->nxt;
 	}
 	
@@ -197,7 +185,6 @@ int newProc(){
     printf("Created Bezeichner\n");
     #endif
     
-//    tProc* newProcedure = createProc(root);
 	tProc* newProcedure = createProc(procList);
    
 	newBezeichner->pObj = newProcedure;
@@ -244,8 +231,6 @@ int FreeDescriptions(){
 	
 	tProc* oldProc = procList;
 	procList = procList->pParent;
-	
-	//free(oldProc);		//Muss noch erhalten bleiben?
 	
 	return 1;
 }
