@@ -70,9 +70,18 @@ tBez* Search(char* name){
 
 	tBez* start = procList->pLBez;
 	tBez* tmp 	= start;
+    tBez* tmp2  = tmp;
 	
 	while(tmp != NULL){
 		if(strcmp(tmp->pName, name) == 0) return tmp;
+        if(tmp->Kz == KzProc){
+            tProc* procListCopy = procList;
+            procList = tmp->pObj;
+            tmp2 = tmp;
+            tmp2 = Search(name);
+            procList = procListCopy;
+            if(tmp2 != NOTFOUND) return tmp2;
+        }
 		tmp = tmp->nxt;
 	}
 	
