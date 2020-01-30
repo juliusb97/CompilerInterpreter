@@ -74,6 +74,7 @@ tBez* Search(char* name){
 	
 	while(tmp != NULL){
 		if(strcmp(tmp->pName, name) == 0) return tmp;
+		/*
         if(tmp->Kz == KzProc){
             tProc* procListCopy = procList;
             procList = tmp->pObj;
@@ -82,6 +83,7 @@ tBez* Search(char* name){
             procList = procListCopy;
             if(tmp2 != NOTFOUND) return tmp2;
         }
+        */
 		tmp = tmp->nxt;
 	}
 	
@@ -195,8 +197,9 @@ int newProc(){
     printf("Created Bezeichner\n");
     #endif
     
-    tProc* newProcedure = createProc(root);
-
+//    tProc* newProcedure = createProc(root);
+	tProc* newProcedure = createProc(procList);
+   
 	newBezeichner->pObj = newProcedure;
 	procList = newProcedure;
     
